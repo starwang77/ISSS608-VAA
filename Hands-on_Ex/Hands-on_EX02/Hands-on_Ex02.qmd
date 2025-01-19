@@ -1,0 +1,14 @@
+---
+title: "Hands-on Exercise 2"
+author: "WANG XINGYUN"
+---
+
+# 2.Getting started
+
+## 2.2.1 **Installing and loading the required libraries**
+
+```{r}
+pacman::p_load(ggrepel, patchwork, 
+               ggthemes, hrbrthemes,
+               tidyverse)
+```
