@@ -125,8 +125,9 @@ ggplotly(gg)
 ### **4.4.2 Building an animated bubble plot: `plot_ly()` method**
 
 ```{r}
-bp <- globalPop %>%
-  plot_ly(x = ~Old, 
+bp <- suppressWarnings({
+  globalPop %>%
+    plot_ly(x = ~Old, 
           y = ~Young, 
           size = ~Population, 
           color = ~Continent,
@@ -138,6 +139,7 @@ bp <- globalPop %>%
           mode = 'markers'
           ) %>%
   layout(showlegend = FALSE)
+})
 bp
 ```
 
