@@ -1,4 +1,4 @@
 ---
-title: "Hands-on Exercise 3"
+title: "Hands-on Exercise 3a"
 author: "WANG XINGYUN"
 ---
