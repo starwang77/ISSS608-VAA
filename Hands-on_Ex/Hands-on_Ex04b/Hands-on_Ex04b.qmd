@@ -19,8 +19,7 @@ In this hands-on exercise, you will gain hands-on experience on using:
 
 **ggstatsplot** is an extension of [**ggplot2**](https://ggplot2.tidyverse.org/) package for creating graphics with details from statistical tests included in the information-rich plots themselves.
 
-\- To provide alternative statistical inference methods by default.
-- To follow best practices for statistical reporting. For all statistical tests reported in the plots, the default template abides by the \[APA\](https://my.ilstu.edu/\~jhkahn/apastats.html) gold standard for statistical reporting. For example, here are results from a robust t-test:
+\- To provide alternative statistical inference methods by default. - To follow best practices for statistical reporting. For all statistical tests reported in the plots, the default template abides by the \[APA\](https://my.ilstu.edu/\~jhkahn/apastats.html) gold standard for statistical reporting. For example, here are results from a robust t-test:
 
 ## **10.3 Getting Started**
 
