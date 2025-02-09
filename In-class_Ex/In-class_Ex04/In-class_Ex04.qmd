@@ -1,0 +1,33 @@
+---
+title: "In-class_Ex04"
+author: "WANG XINGYUN"
+---
+
+```{r}
+pacman::p_load(haven, SmartEDA, ggdist, ggridges, ggthemes,
+               colorspace, ggstatsplot, tidyverse)
+```
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+```{r}
+ggplot(data = exam_data,
+      aes(x = ENGLISH,
+          y = CLASS)) +
+  geom_boxplot()
+```
+
+```{r}
+churn_telecom <- read_sas("data/churn_telecom.sas7bdat") %>% 
+  mutate(CHURN_FLG = factor(
+    CHURN_FLG,
+    levels = c("1","0"),
+    labels = c("churn", "Non-Churn")))
+```
+
+```{r}
+ggplot(data = churn_telecom,
+       aes(x = CHURN_FLG)) + geom_bar()
+```
