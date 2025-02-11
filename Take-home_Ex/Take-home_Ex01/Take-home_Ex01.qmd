@@ -8,3 +8,358 @@ author: "WANG XINGYUN"
 ## **Overview**
 
 ### **Setting the scene**
+
+## Our task
+
+## Getting started
+
+### load package
+
+For this exercise, we load the following R packages using the `pacman::p_load()` function
+
+```{r}
+pacman::p_load(tidyverse, haven,
+               ggrepel, ggthemes,
+               ggridges, ggdist,
+               patchwork, scales, corrr)
+```
+
+### Import data
+
+In this section, we need to read this data-set
+
+```{r}
+df <- read.csv("data/japan_heart_attack_dataset.csv")
+```
+
+check dataset structure and show the head data
+
+```{r}
+str(df)
+head(df)
+```
+
+### **Dataset Overview**
+
+#### **📌 Data Size:**
+
+-   The dataset consists of 30,000 rows and 32 columns.
+
+#### **📌 Key Variables:**
+
+1️⃣ **Demographic Information:**
+
+-   `Age` (years)
+
+-   `Gender` (Male/Female)
+
+-   `Region` (Geographical location)
+
+2️⃣ **Health Conditions:**
+
+-   `Smoking_History` (History of smoking)
+
+-   `Diabetes_History` (History of diabetes)
+
+-   `Hypertension_History` (History of hypertension)
+
+-   `Cholesterol_Level` (Cholesterol levels)
+
+-   `BMI` (Body Mass Index)
+
+3️⃣ **Lifestyle Factors:**
+
+-   `Physical_Activity` (Level of physical activity)
+
+-   `Diet_Quality` (Dietary quality)
+
+-   `Alcohol_Consumption` (Alcohol intake)
+
+4️⃣ **Physiological Measurements:**
+
+-   `Heart_Rate` (Heart rate)
+
+-   `Systolic_BP` (Systolic blood pressure)
+
+-   `Diastolic_BP` (Diastolic blood pressure)
+
+5️⃣ **Heart Attack Occurrence:**
+
+-   `Heart_Attack_Occurrence` (Indicates whether a heart attack occurred)
+
+This dataset provides a comprehensive view of demographic, health, lifestyle, and physiological factors that may influence heart attack occurrences. The analysis will explore potential correlations and risk factors associated with heart disease.
+
+### Data pre-processing
+
+I found the many columns-"Extra_column" in this dataset, we try to check. We first take a look at the data, and check if there are any duplicate entries.
+
+```{r}
+glimpse(df)
+```
+
+Display only the first few rows after removing the Extra_Column.
+
+```{r}
+
+head(df %>% select(-starts_with("Extra_Column")))
+
+```
+
+#### **Check for duplicates**
+
+Using the `duplicated` function, we see that there are no duplicate entries in the data.
+
+```{r}
+df[duplicated(df),]
+```
+
+#### Check for missing values
+
+```{r}
+colSums(is.na(df))
+```
+
+✅ No missing values in the data, ready for use.\
+✅ No duplicate entries, no need for deduplication.\
+✅ Ready for data visualization and analysis.
+
+## EDA 1 Heart Attack Occurrence by Age Distribution
+
+This stacked histogram visualizes the distribution of heart attack occurrences across different age groups.
+
+The x-axis (Age) represents the age of individuals.The y-axis (Count) represents the number of individuals in each age group.
+
+The bars are color-coded:Blue ("No") represents individuals who did not experience a heart attack.Red ("Yes") represents individuals who experienced a heart attack.
+
+```{r}
+ggplot(df, aes(x = Age, fill = Heart_Attack_Occurrence)) +
+  geom_histogram(binwidth = 5, color = "black", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Heart Attack Occurrence by Age Distribution",
+       x = "Age",
+       y = "Count") +
+  scale_fill_manual(values = c("No" = "blue", "Yes" = "red"))
+
+```
+
+### **Key Observations:**
+
+1.  The dataset has a relatively uniform distribution of individuals across different age groups, except for a slight drop in count near age 80.
+
+2.  Heart attacks (red section) appear in all age groups, but their proportion increases slightly with age.
+
+3.  Younger individuals (below 40) have a lower incidence of heart attacks, whereas older individuals (50+) show a higher proportion of heart attack occurrences.
+
+This visualization effectively highlights the relationship between age and heart attack occurrence, showing a general trend that older individuals are more likely to experience heart attacks.
+
+## EDA 2 Heart Attack Occurrence by Age Group
+
+We could find there is a relationship between age and heart attack occurrence. So we can try to analysis the different heart attack occurrence from different age group.
+
+Firstly, we define the age group, then we can calculate the heart attack rate, and finally we attempt to draw a stacked bar chart that allows us to directly observe the relationship between age and heart attack rate.
+
+```{r}
+
+df_summary <- df %>%
+  mutate(Age_Group = cut(Age, breaks = c(18, 35, 50, 65, 80), 
+                         labels = c("18-35", "36-50", "51-65", "66-80"),
+                         right = FALSE)) %>%
+  group_by(Age_Group, Heart_Attack_Occurrence) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+
+ggplot(df_summary, aes(x = Age_Group, y = Count, fill = Heart_Attack_Occurrence)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8)) +  
+  geom_text(aes(label = Count), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, size = 3) +  
+  theme_minimal() +
+  labs(title = "Heart Attack Occurrence by Age Group",
+       x = "Age Group",
+       y = "Count") +
+  scale_fill_manual(values = c("No" = "blue", "Yes" = "red"))
+
+
+```
+
+### **Key Observations:**
+
+The total number of individuals decreases slightly as age increases.
+
+-   18-35 age group has the highest count (7487 individuals).
+
+-   36-50, 51-65, and 66-80 age groups have relatively similar numbers (\~6500-6600 individuals).
+
+-   The absolute count of heart attack occurrences (red bars) is relatively stable across all age groups:
+
+    -   18-35: 779 cases
+
+    -   36-50: 733 cases
+
+    -   51-65: 740 cases
+
+    -   66-80: 712 cases
+
+    #### **Key Insight:**
+
+    1.  The absolute number of heart attacks does not show a significant increase with age.
+    2.  However, this does not account for population size differences. We need to look at heart attack rates for a better interpretation.
+
+```{r}
+
+df_rate <- df %>%
+  mutate(Age_Group = cut(Age, breaks = c(18, 35, 50, 65, 80), 
+                         labels = c("18-35", "36-50", "51-65", "66-80"),
+                         right = FALSE)) %>%
+  group_by(Age_Group) %>%
+  summarise(Heart_Attack_Rate = mean(Heart_Attack_Occurrence == "Yes")) %>%
+  ungroup()
+
+ggplot(df_rate, aes(x = Age_Group, y = Heart_Attack_Rate, group = 1)) +
+  geom_line(color = "red", size = 1) +  
+  geom_point(color = "red", size = 3) +  
+  geom_text(aes(label = round(Heart_Attack_Rate, 3)),  
+            vjust = -0.4, size = 3, color = "black") +  
+  theme_minimal() +
+  labs(title = "Heart Attack Rate by Age Group",
+       x = "Age Group",
+       y = "Heart Attack Rate")
+
+
+```
+
+**Heart attack rate is not strictly increasing with age.**
+
+-   The 18-35 group has the lowest rate (0.094).
+
+-   The rate increases in the 36-50 group (0.101 or 10.1%) and peaks at 51-65 (0.104).
+
+-   Surprisingly, the 66-80 group sees a slight decline (0.097) in heart attack rate.
+
+-   The highest heart attack risk is in the 51-65 age group.
+
+### **Key Observations:**
+
+✅ Heart attack risk is lowest in the youngest group (18-35) and peaks at 51-65.\
+✅ The absolute number of heart attacks remains relatively stable across age groups.\
+✅ The oldest group (66-80) shows a slight decrease in heart attack rate, possibly due to survivor bias or better health management.
+
+## EDA 2 The relationship between gender and heart attack
+
+```{r}
+df_gender_rate <- df %>%
+  group_by(Gender) %>%
+  summarise(Heart_Attack_Rate = mean(Heart_Attack_Occurrence == "Yes"))
+
+ggplot(df_gender_rate, aes(x = Gender, y = Heart_Attack_Rate, fill = Gender)) +
+  geom_bar(stat = "identity") +  
+  geom_text(aes(label = round(Heart_Attack_Rate, 3)), vjust = -0.5) +
+  theme_minimal() +
+  labs(title = "Heart Attack Rate by Gender",
+       x = "Gender",
+       y = "Heart Attack Rate")
+
+```
+
+## EDA3 Calculate the incidence rate of heart disease in different regions
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+# 计算各地区心脏病发病率
+region_rate <- df %>%
+  group_by(Region) %>%
+  summarise(Heart_Attack_Rate = mean(Heart_Attack_Occurrence == "Yes")) %>%
+  arrange(desc(Heart_Attack_Rate))  # 排序，找出最高和最低的地区
+
+# 绘制条形图
+ggplot(region_rate, aes(x = reorder(Region, -Heart_Attack_Rate), y = Heart_Attack_Rate, fill = Region)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Heart Attack Rate by Region",
+       x = "Region",
+       y = "Heart Attack Rate") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+EDA 4 健康状况与心脏病的关系
+
+```{r}
+# 计算健康因素对心脏病的影响（对比“有病史”和“无病史”）
+health_factors <- df %>%
+  summarise(
+    Smoking_Yes = mean(Heart_Attack_Occurrence[Smoking_History == "Yes"] == "Yes"),
+    Smoking_No = mean(Heart_Attack_Occurrence[Smoking_History == "No"] == "Yes"),
+    
+    Diabetes_Yes = mean(Heart_Attack_Occurrence[Diabetes_History == "Yes"] == "Yes"),
+    Diabetes_No = mean(Heart_Attack_Occurrence[Diabetes_History == "No"] == "Yes"),
+    
+    Hypertension_Yes = mean(Heart_Attack_Occurrence[Hypertension_History == "Yes"] == "Yes"),
+    Hypertension_No = mean(Heart_Attack_Occurrence[Hypertension_History == "No"] == "Yes")
+  )
+
+# 打印对比结果
+print(health_factors)
+
+
+```
+
+```{r}
+library(tidyr)
+library(ggplot2)
+
+# 转换数据格式，适用于 ggplot
+health_factors_long <- health_factors %>%
+  pivot_longer(cols = everything(), names_to = "Condition", values_to = "Heart_Attack_Rate") %>%
+  separate(Condition, into = c("Factor", "Group"), sep = "_")
+
+# 绘制分组柱状图
+ggplot(health_factors_long, aes(x = Factor, y = Heart_Attack_Rate, fill = Group)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Heart Attack Rate by Health Condition",
+       x = "Health Condition",
+       y = "Heart Attack Rate") +
+  scale_fill_manual(values = c("Yes" = "red", "No" = "blue"))
+
+```
+
+```{r}
+ggplot(df, aes(x = Heart_Attack_Occurrence, y = Cholesterol_Level, fill = Heart_Attack_Occurrence)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Cholesterol Level vs Heart Attack Occurrence",
+       x = "Heart Attack Occurrence",
+       y = "Cholesterol Level")
+
+```
+
+EDA 生活方式与心脏病的关系
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# 计算生活方式对心脏病的影响（分组对比）
+lifestyle_factors <- df %>%
+  summarise(
+    Physical_Activity_High = mean(Heart_Attack_Occurrence[Physical_Activity == "High"] == "Yes"),
+    Physical_Activity_Low = mean(Heart_Attack_Occurrence[Physical_Activity == "Low"] == "Yes"),
+    
+    Diet_Quality_Good = mean(Heart_Attack_Occurrence[Diet_Quality == "Good"] == "Yes"),
+    Diet_Quality_Poor = mean(Heart_Attack_Occurrence[Diet_Quality == "Poor"] == "Yes"),
+    
+    Alcohol_High = mean(Heart_Attack_Occurrence[Alcohol_Consumption == "High"] == "Yes"),
+    Alcohol_Low = mean(Heart_Attack_Occurrence[Alcohol_Consumption == "Low"] == "Yes")
+  )
+
+# 打印表格结果
+print(lifestyle_factors)
+
+```

@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -202,6 +236,25 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#setting-the-scene" id="toc-setting-the-scene" class="nav-link" data-scroll-target="#setting-the-scene"><strong>Setting the scene</strong></a></li>
   </ul></li>
+  <li><a href="#our-task" id="toc-our-task" class="nav-link" data-scroll-target="#our-task">Our task</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#load-package" id="toc-load-package" class="nav-link" data-scroll-target="#load-package">load package</a></li>
+  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">Import data</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview"><strong>Dataset Overview</strong></a></li>
+  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing">Data pre-processing</a></li>
+  </ul></li>
+  <li><a href="#eda-1-heart-attack-occurrence-by-age-distribution" id="toc-eda-1-heart-attack-occurrence-by-age-distribution" class="nav-link" data-scroll-target="#eda-1-heart-attack-occurrence-by-age-distribution">EDA 1 Heart Attack Occurrence by Age Distribution</a>
+  <ul class="collapse">
+  <li><a href="#key-observations" id="toc-key-observations" class="nav-link" data-scroll-target="#key-observations"><strong>Key Observations:</strong></a></li>
+  </ul></li>
+  <li><a href="#eda-2-heart-attack-occurrence-by-age-group" id="toc-eda-2-heart-attack-occurrence-by-age-group" class="nav-link" data-scroll-target="#eda-2-heart-attack-occurrence-by-age-group">EDA 2 Heart Attack Occurrence by Age Group</a>
+  <ul class="collapse">
+  <li><a href="#key-observations-1" id="toc-key-observations-1" class="nav-link" data-scroll-target="#key-observations-1"><strong>Key Observations:</strong></a></li>
+  <li><a href="#key-observations-2" id="toc-key-observations-2" class="nav-link" data-scroll-target="#key-observations-2"><strong>Key Observations:</strong></a></li>
+  </ul></li>
+  <li><a href="#eda-2-the-relationship-between-gender-and-heart-attack" id="toc-eda-2-the-relationship-between-gender-and-heart-attack" class="nav-link" data-scroll-target="#eda-2-the-relationship-between-gender-and-heart-attack">EDA 2 The relationship between gender and heart attack</a></li>
+  <li><a href="#eda3-calculate-the-incidence-rate-of-heart-disease-in-different-regions" id="toc-eda3-calculate-the-incidence-rate-of-heart-disease-in-different-regions" class="nav-link" data-scroll-target="#eda3-calculate-the-incidence-rate-of-heart-disease-in-different-regions">EDA3 Calculate the incidence rate of heart disease in different regions</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -240,9 +293,570 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="overview"><strong>Overview</strong></h2>
 <section id="setting-the-scene" class="level3">
 <h3 class="anchored" data-anchor-id="setting-the-scene"><strong>Setting the scene</strong></h3>
-
-
 </section>
+</section>
+<section id="our-task" class="level2">
+<h2 class="anchored" data-anchor-id="our-task">Our task</h2>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting started</h2>
+<section id="load-package" class="level3">
+<h3 class="anchored" data-anchor-id="load-package">load package</h3>
+<p>For this exercise, we load the following R packages using the&nbsp;<code>pacman::p_load()</code>&nbsp;function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, haven,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggrepel, ggthemes,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               ggridges, ggdist,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>               patchwork, scales, corrr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="import-data" class="level3">
+<h3 class="anchored" data-anchor-id="import-data">Import data</h3>
+<p>In this section, we need to read this data-set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/japan_heart_attack_dataset.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>check dataset structure and show the head data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   30000 obs. of  32 variables:
+ $ Age                    : int  56 69 46 32 60 25 78 38 56 75 ...
+ $ Gender                 : chr  "Male" "Male" "Male" "Female" ...
+ $ Region                 : chr  "Urban" "Urban" "Rural" "Urban" ...
+ $ Smoking_History        : chr  "Yes" "No" "Yes" "No" ...
+ $ Diabetes_History       : chr  "No" "No" "No" "No" ...
+ $ Hypertension_History   : chr  "No" "No" "No" "No" ...
+ $ Cholesterol_Level      : num  186 185 211 211 224 ...
+ $ Physical_Activity      : chr  "Moderate" "Low" "Low" "Moderate" ...
+ $ Diet_Quality           : chr  "Poor" "Good" "Average" "Good" ...
+ $ Alcohol_Consumption    : chr  "Low" "Low" "Moderate" "High" ...
+ $ Stress_Levels          : num  3.64 3.38 3.81 6.01 6.81 ...
+ $ BMI                    : num  34 28.2 27.6 23.7 19.8 ...
+ $ Heart_Rate             : num  72.3 57.5 64.7 55.1 76.7 ...
+ $ Systolic_BP            : num  124 130 146 132 101 ...
+ $ Diastolic_BP           : num  85.7 73.5 72 68.2 92.9 ...
+ $ Family_History         : chr  "No" "Yes" "No" "No" ...
+ $ Heart_Attack_Occurrence: chr  "No" "No" "No" "No" ...
+ $ Extra_Column_1         : num  0.405 0.0363 0.853 0.3909 0.9336 ...
+ $ Extra_Column_2         : num  0.433 0.513 0.22 0.297 0.976 ...
+ $ Extra_Column_3         : num  0.629 0.668 0.613 0.156 0.174 ...
+ $ Extra_Column_4         : num  0.702 0.116 0.508 0.87 0.295 ...
+ $ Extra_Column_5         : num  0.498 0.424 0.901 0.39 0.959 ...
+ $ Extra_Column_6         : num  0.0079 0.0839 0.2272 0.4032 0.6898 ...
+ $ Extra_Column_7         : num  0.795 0.689 0.496 0.741 0.905 ...
+ $ Extra_Column_8         : num  0.291 0.83 0.752 0.224 0.757 ...
+ $ Extra_Column_9         : num  0.497 0.634 0.182 0.329 0.338 ...
+ $ Extra_Column_10        : num  0.522 0.302 0.629 0.143 0.362 ...
+ $ Extra_Column_11        : num  0.7997 0.0437 0.0183 0.9078 0.7286 ...
+ $ Extra_Column_12        : num  0.7224 0.4517 0.0632 0.5423 0.1767 ...
+ $ Extra_Column_13        : num  0.149 0.879 0.147 0.922 0.485 ...
+ $ Extra_Column_14        : num  0.834 0.536 0.997 0.626 0.312 ...
+ $ Extra_Column_15        : num  0.0616 0.6178 0.9745 0.2286 0.4528 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Age Gender Region Smoking_History Diabetes_History Hypertension_History
+1  56   Male  Urban             Yes               No                   No
+2  69   Male  Urban              No               No                   No
+3  46   Male  Rural             Yes               No                   No
+4  32 Female  Urban              No               No                   No
+5  60 Female  Rural              No               No                   No
+6  25 Female  Rural              No               No                   No
+  Cholesterol_Level Physical_Activity Diet_Quality Alcohol_Consumption
+1          186.4002          Moderate         Poor                 Low
+2          185.1367               Low         Good                 Low
+3          210.6966               Low      Average            Moderate
+4          211.1655          Moderate         Good                High
+5          223.8143              High         Good                High
+6          220.3400               Low         Good                High
+  Stress_Levels      BMI Heart_Rate Systolic_BP Diastolic_BP Family_History
+1      3.644786 33.96135   72.30153    123.9021     85.68281             No
+2      3.384056 28.24287   57.45764    129.8933     73.52426            Yes
+3      3.810911 27.60121   64.65870    145.6549     71.99481             No
+4      6.014878 23.71729   55.13147    131.7852     68.21133             No
+5      6.806883 19.77158   76.66792    100.6946     92.90249             No
+6      8.207233 20.24744   67.66268    134.5966     73.14970             No
+  Heart_Attack_Occurrence Extra_Column_1 Extra_Column_2 Extra_Column_3
+1                      No     0.40498852      0.4333000      0.6287124
+2                      No     0.03627815      0.5125669      0.6683928
+3                      No     0.85297888      0.2195908      0.6134366
+4                      No     0.39085280      0.2968468      0.1557240
+5                      No     0.93356280      0.9756513      0.1737750
+6                      No     0.52447124      0.2328291      0.5885502
+  Extra_Column_4 Extra_Column_5 Extra_Column_6 Extra_Column_7 Extra_Column_8
+1      0.7016095      0.4981423    0.007901312      0.7945826      0.2907792
+2      0.1155287      0.4238194    0.083932768      0.6889511      0.8301636
+3      0.5080100      0.9006698    0.227205241      0.4963436      0.7521068
+4      0.8702514      0.3903559    0.403181621      0.7414089      0.2239681
+5      0.2953319      0.9594067    0.689787430      0.9045740      0.7570983
+6      0.4169773      0.1703778    0.448359048      0.3690557      0.1958173
+  Extra_Column_9 Extra_Column_10 Extra_Column_11 Extra_Column_12
+1      0.4971931       0.5219945      0.79965663      0.72239788
+2      0.6344903       0.3020434      0.04368285      0.45166789
+3      0.1815012       0.6291803      0.01827617      0.06322702
+4      0.3293139       0.1431905      0.90778075      0.54232201
+5      0.3377609       0.3623747      0.72855208      0.17669914
+6      0.3959485       0.8354301      0.00359574      0.94144789
+  Extra_Column_13 Extra_Column_14 Extra_Column_15
+1       0.1487387       0.8340099     0.061632229
+2       0.8786714       0.5356022     0.617825340
+3       0.1465122       0.9972962     0.974455410
+4       0.9224606       0.6262165     0.228606344
+5       0.4847487       0.3120910     0.452808843
+6       0.8757355       0.7186975     0.008745039</code></pre>
+</div>
+</div>
+</section>
+<section id="dataset-overview" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-overview"><strong>Dataset Overview</strong></h3>
+<section id="data-size" class="level4">
+<h4 class="anchored" data-anchor-id="data-size"><strong>📌 Data Size:</strong></h4>
+<ul>
+<li>The dataset consists of 30,000 rows and 32 columns.</li>
+</ul>
+</section>
+<section id="key-variables" class="level4">
+<h4 class="anchored" data-anchor-id="key-variables"><strong>📌 Key Variables:</strong></h4>
+<p>1️⃣ <strong>Demographic Information:</strong></p>
+<ul>
+<li><p><code>Age</code> (years)</p></li>
+<li><p><code>Gender</code> (Male/Female)</p></li>
+<li><p><code>Region</code> (Geographical location)</p></li>
+</ul>
+<p>2️⃣ <strong>Health Conditions:</strong></p>
+<ul>
+<li><p><code>Smoking_History</code> (History of smoking)</p></li>
+<li><p><code>Diabetes_History</code> (History of diabetes)</p></li>
+<li><p><code>Hypertension_History</code> (History of hypertension)</p></li>
+<li><p><code>Cholesterol_Level</code> (Cholesterol levels)</p></li>
+<li><p><code>BMI</code> (Body Mass Index)</p></li>
+</ul>
+<p>3️⃣ <strong>Lifestyle Factors:</strong></p>
+<ul>
+<li><p><code>Physical_Activity</code> (Level of physical activity)</p></li>
+<li><p><code>Diet_Quality</code> (Dietary quality)</p></li>
+<li><p><code>Alcohol_Consumption</code> (Alcohol intake)</p></li>
+</ul>
+<p>4️⃣ <strong>Physiological Measurements:</strong></p>
+<ul>
+<li><p><code>Heart_Rate</code> (Heart rate)</p></li>
+<li><p><code>Systolic_BP</code> (Systolic blood pressure)</p></li>
+<li><p><code>Diastolic_BP</code> (Diastolic blood pressure)</p></li>
+</ul>
+<p>5️⃣ <strong>Heart Attack Occurrence:</strong></p>
+<ul>
+<li><code>Heart_Attack_Occurrence</code> (Indicates whether a heart attack occurred)</li>
+</ul>
+<p>This dataset provides a comprehensive view of demographic, health, lifestyle, and physiological factors that may influence heart attack occurrences. The analysis will explore potential correlations and risk factors associated with heart disease.</p>
+</section>
+</section>
+<section id="data-pre-processing" class="level3">
+<h3 class="anchored" data-anchor-id="data-pre-processing">Data pre-processing</h3>
+<p>I found the many columns-“Extra_column” in this dataset, we try to check. We first take a look at the data, and check if there are any duplicate entries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 30,000
+Columns: 32
+$ Age                     &lt;int&gt; 56, 69, 46, 32, 60, 25, 78, 38, 56, 75, 36, 40…
+$ Gender                  &lt;chr&gt; "Male", "Male", "Male", "Female", "Female", "F…
+$ Region                  &lt;chr&gt; "Urban", "Urban", "Rural", "Urban", "Rural", "…
+$ Smoking_History         &lt;chr&gt; "Yes", "No", "Yes", "No", "No", "No", "No", "Y…
+$ Diabetes_History        &lt;chr&gt; "No", "No", "No", "No", "No", "No", "Yes", "No…
+$ Hypertension_History    &lt;chr&gt; "No", "No", "No", "No", "No", "No", "Yes", "No…
+$ Cholesterol_Level       &lt;dbl&gt; 186.4002, 185.1367, 210.6966, 211.1655, 223.81…
+$ Physical_Activity       &lt;chr&gt; "Moderate", "Low", "Low", "Moderate", "High", …
+$ Diet_Quality            &lt;chr&gt; "Poor", "Good", "Average", "Good", "Good", "Go…
+$ Alcohol_Consumption     &lt;chr&gt; "Low", "Low", "Moderate", "High", "High", "Hig…
+$ Stress_Levels           &lt;dbl&gt; 3.644786, 3.384056, 3.810911, 6.014878, 6.8068…
+$ BMI                     &lt;dbl&gt; 33.96135, 28.24287, 27.60121, 23.71729, 19.771…
+$ Heart_Rate              &lt;dbl&gt; 72.30153, 57.45764, 64.65870, 55.13147, 76.667…
+$ Systolic_BP             &lt;dbl&gt; 123.90209, 129.89331, 145.65490, 131.78522, 10…
+$ Diastolic_BP            &lt;dbl&gt; 85.68281, 73.52426, 71.99481, 68.21133, 92.902…
+$ Family_History          &lt;chr&gt; "No", "Yes", "No", "No", "No", "No", "No", "No…
+$ Heart_Attack_Occurrence &lt;chr&gt; "No", "No", "No", "No", "No", "No", "No", "No"…
+$ Extra_Column_1          &lt;dbl&gt; 0.40498852, 0.03627815, 0.85297888, 0.39085280…
+$ Extra_Column_2          &lt;dbl&gt; 0.43330004, 0.51256694, 0.21959083, 0.29684675…
+$ Extra_Column_3          &lt;dbl&gt; 0.62871236, 0.66839275, 0.61343656, 0.15572404…
+$ Extra_Column_4          &lt;dbl&gt; 0.70160955, 0.11552874, 0.50800995, 0.87025144…
+$ Extra_Column_5          &lt;dbl&gt; 0.49814235, 0.42381938, 0.90066981, 0.39035591…
+$ Extra_Column_6          &lt;dbl&gt; 0.007901312, 0.083932768, 0.227205241, 0.40318…
+$ Extra_Column_7          &lt;dbl&gt; 0.79458257, 0.68895108, 0.49634358, 0.74140891…
+$ Extra_Column_8          &lt;dbl&gt; 0.29077922, 0.83016364, 0.75210679, 0.22396813…
+$ Extra_Column_9          &lt;dbl&gt; 0.49719307, 0.63449028, 0.18150125, 0.32931387…
+$ Extra_Column_10         &lt;dbl&gt; 0.52199452, 0.30204337, 0.62918031, 0.14319054…
+$ Extra_Column_11         &lt;dbl&gt; 0.79965663, 0.04368285, 0.01827617, 0.90778075…
+$ Extra_Column_12         &lt;dbl&gt; 0.72239788, 0.45166789, 0.06322702, 0.54232201…
+$ Extra_Column_13         &lt;dbl&gt; 0.1487387, 0.8786714, 0.1465122, 0.9224606, 0.…
+$ Extra_Column_14         &lt;dbl&gt; 0.8340099, 0.5356022, 0.9972962, 0.6262165, 0.…
+$ Extra_Column_15         &lt;dbl&gt; 0.061632229, 0.617825340, 0.974455410, 0.22860…</code></pre>
+</div>
+</div>
+<p>Display only the first few rows after removing the Extra_Column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"Extra_Column"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Age Gender Region Smoking_History Diabetes_History Hypertension_History
+1  56   Male  Urban             Yes               No                   No
+2  69   Male  Urban              No               No                   No
+3  46   Male  Rural             Yes               No                   No
+4  32 Female  Urban              No               No                   No
+5  60 Female  Rural              No               No                   No
+6  25 Female  Rural              No               No                   No
+  Cholesterol_Level Physical_Activity Diet_Quality Alcohol_Consumption
+1          186.4002          Moderate         Poor                 Low
+2          185.1367               Low         Good                 Low
+3          210.6966               Low      Average            Moderate
+4          211.1655          Moderate         Good                High
+5          223.8143              High         Good                High
+6          220.3400               Low         Good                High
+  Stress_Levels      BMI Heart_Rate Systolic_BP Diastolic_BP Family_History
+1      3.644786 33.96135   72.30153    123.9021     85.68281             No
+2      3.384056 28.24287   57.45764    129.8933     73.52426            Yes
+3      3.810911 27.60121   64.65870    145.6549     71.99481             No
+4      6.014878 23.71729   55.13147    131.7852     68.21133             No
+5      6.806883 19.77158   76.66792    100.6946     92.90249             No
+6      8.207233 20.24744   67.66268    134.5966     73.14970             No
+  Heart_Attack_Occurrence
+1                      No
+2                      No
+3                      No
+4                      No
+5                      No
+6                      No</code></pre>
+</div>
+</div>
+<section id="check-for-duplicates" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-duplicates"><strong>Check for duplicates</strong></h4>
+<p>Using the&nbsp;<code>duplicated</code>&nbsp;function, we see that there are no duplicate entries in the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df[<span class="fu">duplicated</span>(df),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] Age                     Gender                  Region                 
+ [4] Smoking_History         Diabetes_History        Hypertension_History   
+ [7] Cholesterol_Level       Physical_Activity       Diet_Quality           
+[10] Alcohol_Consumption     Stress_Levels           BMI                    
+[13] Heart_Rate              Systolic_BP             Diastolic_BP           
+[16] Family_History          Heart_Attack_Occurrence Extra_Column_1         
+[19] Extra_Column_2          Extra_Column_3          Extra_Column_4         
+[22] Extra_Column_5          Extra_Column_6          Extra_Column_7         
+[25] Extra_Column_8          Extra_Column_9          Extra_Column_10        
+[28] Extra_Column_11         Extra_Column_12         Extra_Column_13        
+[31] Extra_Column_14         Extra_Column_15        
+&lt;0 rows&gt; (or 0-length row.names)</code></pre>
+</div>
+</div>
+</section>
+<section id="check-for-missing-values" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-missing-values">Check for missing values</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    Age                  Gender                  Region 
+                      0                       0                       0 
+        Smoking_History        Diabetes_History    Hypertension_History 
+                      0                       0                       0 
+      Cholesterol_Level       Physical_Activity            Diet_Quality 
+                      0                       0                       0 
+    Alcohol_Consumption           Stress_Levels                     BMI 
+                      0                       0                       0 
+             Heart_Rate             Systolic_BP            Diastolic_BP 
+                      0                       0                       0 
+         Family_History Heart_Attack_Occurrence          Extra_Column_1 
+                      0                       0                       0 
+         Extra_Column_2          Extra_Column_3          Extra_Column_4 
+                      0                       0                       0 
+         Extra_Column_5          Extra_Column_6          Extra_Column_7 
+                      0                       0                       0 
+         Extra_Column_8          Extra_Column_9         Extra_Column_10 
+                      0                       0                       0 
+        Extra_Column_11         Extra_Column_12         Extra_Column_13 
+                      0                       0                       0 
+        Extra_Column_14         Extra_Column_15 
+                      0                       0 </code></pre>
+</div>
+</div>
+<p>✅ No missing values in the data, ready for use.<br>
+✅ No duplicate entries, no need for deduplication.<br>
+✅ Ready for data visualization and analysis.</p>
+</section>
+</section>
+</section>
+<section id="eda-1-heart-attack-occurrence-by-age-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="eda-1-heart-attack-occurrence-by-age-distribution">EDA 1 Heart Attack Occurrence by Age Distribution</h2>
+<p>This stacked histogram visualizes the distribution of heart attack occurrences across different age groups.</p>
+<p>The x-axis (Age) represents the age of individuals.The y-axis (Count) represents the number of individuals in each age group.</p>
+<p>The bars are color-coded:Blue (“No”) represents individuals who did not experience a heart attack.Red (“Yes”) represents individuals who experienced a heart attack.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> Age, <span class="at">fill =</span> Heart_Attack_Occurrence)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Occurrence by Age Distribution"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"No"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="key-observations" class="level3">
+<h3 class="anchored" data-anchor-id="key-observations"><strong>Key Observations:</strong></h3>
+<ol type="1">
+<li><p>The dataset has a relatively uniform distribution of individuals across different age groups, except for a slight drop in count near age 80.</p></li>
+<li><p>Heart attacks (red section) appear in all age groups, but their proportion increases slightly with age.</p></li>
+<li><p>Younger individuals (below 40) have a lower incidence of heart attacks, whereas older individuals (50+) show a higher proportion of heart attack occurrences.</p></li>
+</ol>
+<p>This visualization effectively highlights the relationship between age and heart attack occurrence, showing a general trend that older individuals are more likely to experience heart attacks.</p>
+</section>
+</section>
+<section id="eda-2-heart-attack-occurrence-by-age-group" class="level2">
+<h2 class="anchored" data-anchor-id="eda-2-heart-attack-occurrence-by-age-group">EDA 2 Heart Attack Occurrence by Age Group</h2>
+<p>We could find there is a relationship between age and heart attack occurrence. So we can try to analysis the different heart attack occurrence from different age group.</p>
+<p>Firstly, we define the age group, then we can calculate the heart attack rate, and finally we attempt to draw a stacked bar chart that allows us to directly observe the relationship between age and heart attack rate.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_summary <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age_Group =</span> <span class="fu">cut</span>(Age, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">35</span>, <span class="dv">50</span>, <span class="dv">65</span>, <span class="dv">80</span>), </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-35"</span>, <span class="st">"36-50"</span>, <span class="st">"51-65"</span>, <span class="st">"66-80"</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">right =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Age_Group, Heart_Attack_Occurrence) <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Age_Group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_summary, <span class="fu">aes</span>(<span class="at">x =</span> Age_Group, <span class="at">y =</span> Count, <span class="at">fill =</span> Heart_Attack_Occurrence)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>)) <span class="sc">+</span>  </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Count), </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>), </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Occurrence by Age Group"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age Group"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"No"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="key-observations-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-observations-1"><strong>Key Observations:</strong></h3>
+<p>The total number of individuals decreases slightly as age increases.</p>
+<ul>
+<li><p>18-35 age group has the highest count (7487 individuals).</p></li>
+<li><p>36-50, 51-65, and 66-80 age groups have relatively similar numbers (~6500-6600 individuals).</p></li>
+<li><p>The absolute count of heart attack occurrences (red bars) is relatively stable across all age groups:</p>
+<ul>
+<li><p>18-35: 779 cases</p></li>
+<li><p>36-50: 733 cases</p></li>
+<li><p>51-65: 740 cases</p></li>
+<li><p>66-80: 712 cases</p></li>
+</ul>
+<h4 id="key-insight" class="anchored"><strong>Key Insight:</strong></h4>
+<ol type="1">
+<li>The absolute number of heart attacks does not show a significant increase with age.</li>
+<li>However, this does not account for population size differences. We need to look at heart attack rates for a better interpretation.</li>
+</ol></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_rate <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age_Group =</span> <span class="fu">cut</span>(Age, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">35</span>, <span class="dv">50</span>, <span class="dv">65</span>, <span class="dv">80</span>), </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-35"</span>, <span class="st">"36-50"</span>, <span class="st">"51-65"</span>, <span class="st">"66-80"</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">right =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Age_Group) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Heart_Attack_Rate =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence <span class="sc">==</span> <span class="st">"Yes"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_rate, <span class="fu">aes</span>(<span class="at">x =</span> Age_Group, <span class="at">y =</span> Heart_Attack_Rate, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Heart_Attack_Rate, <span class="dv">3</span>)),  </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span>  </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Rate by Age Group"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age Group"</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Heart Attack Rate"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Heart attack rate is not strictly increasing with age.</strong></p>
+<ul>
+<li><p>The 18-35 group has the lowest rate (0.094).</p></li>
+<li><p>The rate increases in the 36-50 group (0.101 or 10.1%) and peaks at 51-65 (0.104).</p></li>
+<li><p>Surprisingly, the 66-80 group sees a slight decline (0.097) in heart attack rate.</p></li>
+<li><p>The highest heart attack risk is in the 51-65 age group.</p></li>
+</ul>
+</section>
+<section id="key-observations-2" class="level3">
+<h3 class="anchored" data-anchor-id="key-observations-2"><strong>Key Observations:</strong></h3>
+<p>✅ Heart attack risk is lowest in the youngest group (18-35) and peaks at 51-65.<br>
+✅ The absolute number of heart attacks remains relatively stable across age groups.<br>
+✅ The oldest group (66-80) shows a slight decrease in heart attack rate, possibly due to survivor bias or better health management.</p>
+</section>
+</section>
+<section id="eda-2-the-relationship-between-gender-and-heart-attack" class="level2">
+<h2 class="anchored" data-anchor-id="eda-2-the-relationship-between-gender-and-heart-attack">EDA 2 The relationship between gender and heart attack</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_gender_rate <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Gender) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Heart_Attack_Rate =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence <span class="sc">==</span> <span class="st">"Yes"</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_gender_rate, <span class="fu">aes</span>(<span class="at">x =</span> Gender, <span class="at">y =</span> Heart_Attack_Rate, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span>  </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Heart_Attack_Rate, <span class="dv">3</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Rate by Gender"</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Gender"</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Heart Attack Rate"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="eda3-calculate-the-incidence-rate-of-heart-disease-in-different-regions" class="level2">
+<h2 class="anchored" data-anchor-id="eda3-calculate-the-incidence-rate-of-heart-disease-in-different-regions">EDA3 Calculate the incidence rate of heart disease in different regions</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算各地区心脏病发病率</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>region_rate <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Region) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Heart_Attack_Rate =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence <span class="sc">==</span> <span class="st">"Yes"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Heart_Attack_Rate))  <span class="co"># 排序，找出最高和最低的地区</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制条形图</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(region_rate, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Region, <span class="sc">-</span>Heart_Attack_Rate), <span class="at">y =</span> Heart_Attack_Rate, <span class="at">fill =</span> Region)) <span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Rate by Region"</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Region"</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Heart Attack Rate"</span>) <span class="sc">+</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>EDA 4 健康状况与心脏病的关系</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算健康因素对心脏病的影响（对比“有病史”和“无病史”）</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>health_factors <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Smoking_Yes =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Smoking_History <span class="sc">==</span> <span class="st">"Yes"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Smoking_No =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Smoking_History <span class="sc">==</span> <span class="st">"No"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Diabetes_Yes =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Diabetes_History <span class="sc">==</span> <span class="st">"Yes"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Diabetes_No =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Diabetes_History <span class="sc">==</span> <span class="st">"No"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Hypertension_Yes =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Hypertension_History <span class="sc">==</span> <span class="st">"Yes"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Hypertension_No =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Hypertension_History <span class="sc">==</span> <span class="st">"No"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 打印对比结果</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(health_factors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Smoking_Yes Smoking_No Diabetes_Yes Diabetes_No Hypertension_Yes
+1    0.102034 0.09741466    0.1033295  0.09764465        0.1007513
+  Hypertension_No
+1      0.09815488</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 转换数据格式，适用于 ggplot</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>health_factors_long <span class="ot">&lt;-</span> health_factors <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Condition"</span>, <span class="at">values_to =</span> <span class="st">"Heart_Attack_Rate"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(Condition, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Group"</span>), <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制分组柱状图</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(health_factors_long, <span class="fu">aes</span>(<span class="at">x =</span> Factor, <span class="at">y =</span> Heart_Attack_Rate, <span class="at">fill =</span> Group)) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Heart Attack Rate by Health Condition"</span>,</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Health Condition"</span>,</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Heart Attack Rate"</span>) <span class="sc">+</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"No"</span> <span class="ot">=</span> <span class="st">"blue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> Heart_Attack_Occurrence, <span class="at">y =</span> Cholesterol_Level, <span class="at">fill =</span> Heart_Attack_Occurrence)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cholesterol Level vs Heart Attack Occurrence"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Heart Attack Occurrence"</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cholesterol Level"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>EDA 生活方式与心脏病的关系</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算生活方式对心脏病的影响（分组对比）</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>lifestyle_factors <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Physical_Activity_High =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Physical_Activity <span class="sc">==</span> <span class="st">"High"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Physical_Activity_Low =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Physical_Activity <span class="sc">==</span> <span class="st">"Low"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Diet_Quality_Good =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Diet_Quality <span class="sc">==</span> <span class="st">"Good"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Diet_Quality_Poor =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Diet_Quality <span class="sc">==</span> <span class="st">"Poor"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alcohol_High =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Alcohol_Consumption <span class="sc">==</span> <span class="st">"High"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>),</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alcohol_Low =</span> <span class="fu">mean</span>(Heart_Attack_Occurrence[Alcohol_Consumption <span class="sc">==</span> <span class="st">"Low"</span>] <span class="sc">==</span> <span class="st">"Yes"</span>)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 打印表格结果</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lifestyle_factors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Physical_Activity_High Physical_Activity_Low Diet_Quality_Good
+1             0.09866901            0.09449082         0.1008662
+  Diet_Quality_Poor Alcohol_High Alcohol_Low
+1        0.09530134    0.1003775    0.101231</code></pre>
+</div>
+</div>
+
+
 </section>
 </section>
 
