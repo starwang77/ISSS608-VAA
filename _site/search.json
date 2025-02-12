@@ -775,5 +775,26 @@
     "title": "Hands-on Exercise 5e",
     "section": "",
     "text": "This slide shows you how to install a R package which is not available in cran.\n\nIf this is the first time you install a package from github, you should install devtools package by using the code below or else you can skip this step.\n\n\n\nNext, you will load the devtools library and install the package found in github by using the codes below.\n\n\nlibrary(devtools)\n\nLoading required package: usethis\n\ninstall_github(\"timelyportfolio/d3treeR\")\n\nWARNING: Rtools is required to build R packages, but is not currently installed.\n\nPlease download and install Rtools 4.4 from https://cran.r-project.org/bin/windows/Rtools/.\n\n\nUsing GitHub PAT from the git credential store.\n\n\nSkipping install of 'd3treeR' from a github remote, the SHA1 (ebb833db) has not changed since last install.\n  Use `force = TRUE` to force installation\n\n\n\nNow you are ready to launch d3treeR package\n\n\nlibrary(d3treeR)\n\n\n\n\nThe codes below perform two processes.\n\ntreemap() is used to build a treemap by using selected variables in condominium data.frame. The treemap created is save as object called tm.\n\n\ntm &lt;- treemap(realis2018_summarised,\n        index=c(\"Planning Region\", \"Planning Area\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"value\",\n        title=\"Private Residential Property Sold, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\n2.Then d3tree() is used to build an interactive treemap.\n\nd3tree(tm,rootname = \"Singapore\" )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html",
+    "title": "Hands-on Exercise 7",
+    "section": "",
+    "text": "By the end of this hands-on exercise you will be able create the followings data visualisation by using R packages:\n\nplotting a calender heatmap by using ggplot2 functions,\nplotting a cycle plot by using ggplot2 function,\nplotting a slopegraph\nplotting a horizon chart\n\n\n\n\nWrite a code chunk to check, install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.\n\npacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#learning-outcome",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#learning-outcome",
+    "title": "Hands-on Exercise 7",
+    "section": "",
+    "text": "By the end of this hands-on exercise you will be able create the followings data visualisation by using R packages:\n\nplotting a calender heatmap by using ggplot2 functions,\nplotting a cycle plot by using ggplot2 function,\nplotting a slopegraph\nplotting a horizon chart"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#getting-started",
+    "title": "Hands-on Exercise 7",
+    "section": "",
+    "text": "Write a code chunk to check, install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.\n\npacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, tidyverse)"
   }
 ]
