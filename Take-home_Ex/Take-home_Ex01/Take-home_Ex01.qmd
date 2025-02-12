@@ -9,7 +9,13 @@ author: "WANG XINGYUN"
 
 ### **Setting the scene**
 
+Cardiovascular diseases are a growing global health concern, with heart attacks being one of the leading causes of morbidity and mortality. Understanding the risk factors and health profiles associated with heart attacks is crucial for developing targeted prevention strategies. This dataset provides a comprehensive analysis of heart attack occurrences in Japan, specifically comparing youth and adult age groups. By examining key health indicators, lifestyle choices, and medical histories, this dataset offers valuable insights into the distinct patterns and potential triggers of heart attacks across different demographics.
+
 ## Our task
+
+In this exercise, Exploratory Data Analysis (EDA) methods and ggplot functions are used to explore:
+
+Whether the incidence rate of heart disease is different in different ages and genders, and whether there is a significant relationship between heart disease and various diseases, including whether lifestyle, eating habits, etc. affect the incidence rate of heart disease
 
 ## Getting started
 
@@ -21,7 +27,8 @@ For this exercise, we load the following R packages using the `pacman::p_load()
 pacman::p_load(tidyverse, haven,
                ggrepel, ggthemes,
                ggridges, ggdist,
-               patchwork, scales, corrr)
+               patchwork, scales,
+               corrr, ggcorrplot)
 ```
 
 ### Import data
@@ -262,35 +269,48 @@ ggplot(df_gender_rate, aes(x = Gender, y = Heart_Attack_Rate, fill = Gender)) +
 
 ```
 
+### **Key Observations:**
+
+Heart Attack Rate Comparison
+
+The heart attack rate for males (0.102) is slightly higher than for females (0.096). The difference is small but noticeable, indicating that gender may have a minor impact on heart attack occurrence.
+
+Gender-Specific Risk
+
+Males tend to have a slightly higher likelihood of experiencing heart attacks. Females have a lower but still significant heart attack rate
+
 ## EDA3 Calculate the incidence rate of heart disease in different regions
 
 ```{r}
 
-library(dplyr)
-library(ggplot2)
-
-# 计算各地区心脏病发病率
 region_rate <- df %>%
   group_by(Region) %>%
   summarise(Heart_Attack_Rate = mean(Heart_Attack_Occurrence == "Yes")) %>%
-  arrange(desc(Heart_Attack_Rate))  # 排序，找出最高和最低的地区
+  arrange(desc(Heart_Attack_Rate))  
 
-# 绘制条形图
+
 ggplot(region_rate, aes(x = reorder(Region, -Heart_Attack_Rate), y = Heart_Attack_Rate, fill = Region)) +
   geom_bar(stat = "identity") +
+  geom_text(aes(label = round(Heart_Attack_Rate, 4)), 
+            vjust = -0.5, size = 4, color = "black") +  
   theme_minimal() +
   labs(title = "Heart Attack Rate by Region",
        x = "Region",
        y = "Heart Attack Rate") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-
 ```
 
-EDA 4 健康状况与心脏病的关系
+From the above graph, the heart attack occurrence in Urban and Rural is the noticeable difference.
+
+## EDA4 The relationship between health conditions and heart attack occurrence
+
+We need to compare the **heart attack rate** between individuals who have the condition and those who don’t.
+
+### 1.Calculate heart attack rates for each health factor
 
 ```{r}
-# 计算健康因素对心脏病的影响（对比“有病史”和“无病史”）
+# Calculate heart attack rates for each health factor
 health_factors <- df %>%
   summarise(
     Smoking_Yes = mean(Heart_Attack_Occurrence[Smoking_History == "Yes"] == "Yes"),
@@ -301,65 +321,297 @@ health_factors <- df %>%
     
     Hypertension_Yes = mean(Heart_Attack_Occurrence[Hypertension_History == "Yes"] == "Yes"),
     Hypertension_No = mean(Heart_Attack_Occurrence[Hypertension_History == "No"] == "Yes")
-  )
+  ) 
 
-# 打印对比结果
-print(health_factors)
+# Convert to long format for visualization
+health_factors_long <- tidyr::pivot_longer(health_factors, 
+                                           cols = everything(), 
+                                           names_to = c("Condition", "Group"),
+                                           names_sep = "_",
+                                           values_to = "Heart_Attack_Rate")
 
+print(health_factors_long)
 
 ```
 
 ```{r}
-library(tidyr)
-library(ggplot2)
-
-# 转换数据格式，适用于 ggplot
-health_factors_long <- health_factors %>%
-  pivot_longer(cols = everything(), names_to = "Condition", values_to = "Heart_Attack_Rate") %>%
-  separate(Condition, into = c("Factor", "Group"), sep = "_")
-
-# 绘制分组柱状图
-ggplot(health_factors_long, aes(x = Factor, y = Heart_Attack_Rate, fill = Group)) +
-  geom_bar(stat = "identity", position = "dodge") +
+# Plot heart attack rate for each health condition with values displayed
+ggplot(health_factors_long, aes(x = Group, y = Heart_Attack_Rate, fill = Group)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = round(Heart_Attack_Rate, 4)),  # Display values rounded to 4 decimal places
+            vjust = -0.5, size = 4, color = "black") +
+  facet_wrap(~Condition, scales = "free_y") +  # Create separate graphs for each condition
   theme_minimal() +
-  labs(title = "Heart Attack Rate by Health Condition",
-       x = "Health Condition",
+  labs(title = "Impact of Health Conditions on Heart Attack Occurrence",
+       x = "Health Condition Group",
        y = "Heart Attack Rate") +
+  scale_fill_manual(values = c("Yes" = "red", "No" = "blue"))
+
+
+```
+
+### **Key Observations:**
+
+Higher Heart Attack Rates for Individuals with Health Conditions:
+
+The heart attack occurrence rate is slightly higher for individuals with a history of smoking, diabetes, and hypertension compared to those without.
+
+Specifically:
+
+Smoking: 10.2% for smokers vs. 9.74% for non-smokers.
+
+Diabetes: 10.33% for individuals with diabetes vs. 9.76% for those without.
+
+Hypertension: 10.08% for individuals with hypertension vs. 9.82% for those without.
+
+The findings suggest that smoking, diabetes, and hypertension slightly increase the likelihood of a heart attack, with diabetes having the most significant impact.
+
+### 2.Analyze the Impact of Continuous Variables (Cholesterol, BMI)
+
+```{r}
+# Compare Cholesterol Level and BMI for Heart Attack vs. No Heart Attack
+numerical_health <- df %>%
+  group_by(Heart_Attack_Occurrence) %>%
+  summarise(
+    Avg_Cholesterol = mean(Cholesterol_Level, na.rm = TRUE),
+    Avg_BMI = mean(BMI, na.rm = TRUE)
+  )
+
+print(numerical_health)
+
+# Create boxplots for cholesterol and BMI
+df_long <- df %>%
+  tidyr::pivot_longer(cols = c(Cholesterol_Level, BMI), 
+                      names_to = "Health_Metric",
+                      values_to = "Value")
+
+ggplot(df_long, aes(x = Heart_Attack_Occurrence, y = Value, fill = Heart_Attack_Occurrence)) +
+  geom_boxplot() +
+  facet_wrap(~Health_Metric, scales = "free") + 
+  theme_minimal() +
+  labs(title = "Comparison of Cholesterol Level and BMI in Heart Attack Cases",
+       x = "Heart Attack Occurrence",
+       y = "Value") +
   scale_fill_manual(values = c("Yes" = "red", "No" = "blue"))
 
 ```
 
-```{r}
-ggplot(df, aes(x = Heart_Attack_Occurrence, y = Cholesterol_Level, fill = Heart_Attack_Occurrence)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(title = "Cholesterol Level vs Heart Attack Occurrence",
-       x = "Heart Attack Occurrence",
-       y = "Cholesterol Level")
+### **Key Observations:**
 
+The average cholesterol levels (199.91 vs. 199.79) show almost no difference, suggesting that cholesterol level alone may not be a strong distinguishing factor for heart attack risk.
+
+The average BMI values (25.01 vs. 24.91) are very close, indicating no significant difference between the two groups.
+
+Cholesterol levels and BMI are nearly identical between those who experienced a heart attack and those who did not, suggesting they might not be the primary driving factors for heart attacks in this dataset.
+
+### 3. Draw a heat map
+
+```{r}
+df_numeric <- df %>%
+  mutate(
+    Heart_Attack_Occurrence = ifelse(Heart_Attack_Occurrence == "Yes", 1, 0),
+    Smoking_History = ifelse(Smoking_History == "Yes", 1, 0),
+    Diabetes_History = ifelse(Diabetes_History == "Yes", 1, 0),
+    Hypertension_History = ifelse(Hypertension_History == "Yes", 1, 0)
+  ) %>%
+  select(Heart_Attack_Occurrence, Smoking_History, Diabetes_History, Hypertension_History, 
+         Cholesterol_Level, BMI)  
+
+
+df_numeric <- df_numeric %>% na.omit()
+
+
+cor_matrix <- cor(df_numeric, method = "pearson")
+
+
+ggcorrplot(cor_matrix, lab = TRUE, hc.order = TRUE, type = "lower", colors = c("blue", "white", "red"))
 ```
 
-EDA 生活方式与心脏病的关系
-
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
-# 计算生活方式对心脏病的影响（分组对比）
-lifestyle_factors <- df %>%
-  summarise(
-    Physical_Activity_High = mean(Heart_Attack_Occurrence[Physical_Activity == "High"] == "Yes"),
-    Physical_Activity_Low = mean(Heart_Attack_Occurrence[Physical_Activity == "Low"] == "Yes"),
-    
-    Diet_Quality_Good = mean(Heart_Attack_Occurrence[Diet_Quality == "Good"] == "Yes"),
-    Diet_Quality_Poor = mean(Heart_Attack_Occurrence[Diet_Quality == "Poor"] == "Yes"),
-    
-    Alcohol_High = mean(Heart_Attack_Occurrence[Alcohol_Consumption == "High"] == "Yes"),
-    Alcohol_Low = mean(Heart_Attack_Occurrence[Alcohol_Consumption == "Low"] == "Yes")
+df <- df %>%
+  mutate(
+    Heart_Attack_Occurrence = ifelse(Heart_Attack_Occurrence == "Yes", 1, 0),
+    Smoking_History = ifelse(Smoking_History == "Yes", 1, 0),
+    Diabetes_History = ifelse(Diabetes_History == "Yes", 1, 0),
+    Hypertension_History = ifelse(Hypertension_History == "Yes", 1, 0),
+    Cholesterol_Level = scale(Cholesterol_Level),  
+    BMI = scale(BMI)  
   )
 
-# 打印表格结果
-print(lifestyle_factors)
+
+model <- glm(Heart_Attack_Occurrence ~ Smoking_History + Diabetes_History + Hypertension_History + 
+                                       Cholesterol_Level + BMI, 
+             data = df, family = binomial())
+
+summary(model)
 
 ```
+
+### **Key Observations:**
+
+Correlation Heatmap:
+
+The heatmap shows very weak correlations between heart attack occurrence and other health factors.
+
+All correlation values are close to zero, suggesting that none of the selected health factors strongly correlate with heart attack occurrence.
+
+The highest correlation is only 0.01, which is negligible.
+
+There are also weak correlations among other health-related variables, implying that these factors do not exhibit strong interdependencies in this dataset.
+
+Logistic Regression Results:
+
+The logistic regression model was used to analyze the relationship between health factors and heart attack occurrence.
+
+None of the predictor variables (Smoking History, Diabetes History, Hypertension History, Cholesterol Level, BMI) were statistically significant in predicting heart attack occurrence (p-values \> 0.05 for all variables).
+
+The intercept is significant, indicating that the base probability of heart attack occurrence (without considering the predictor variables) is non-trivial.
+
+The estimated coefficients suggest that:Smoking history and diabetes history have positive coefficients, indicating a slight increase in heart attack occurrence. Cholesterol level and BMI have negative coefficients.
+
+Both the logistic regression model and the correlation analysis suggest that the selected health factors (Smoking, Diabetes, Hypertension, Cholesterol Level, and BMI) do not significantly contribute to predicting heart attack occurrence in this dataset.
+
+## EDA5 The relationship between stress level and heart attack occurrence
+
+```{r}
+df <- read.csv("data/japan_heart_attack_dataset.csv")
+
+df <- df %>%
+  mutate(Heart_Attack_Occurrence = ifelse(Heart_Attack_Occurrence == "Yes", 1, 0))
+
+
+df <- df %>%
+  mutate(Stress_Category = case_when(
+    Stress_Levels >= 0 & Stress_Levels <= 3 ~ "Low",
+    Stress_Levels > 3 & Stress_Levels <= 6 ~ "Moderate",
+    Stress_Levels > 6 & Stress_Levels <= 10 ~ "High"
+  ))
+
+
+stress_impact <- df %>%
+  group_by(Stress_Category) %>%
+  summarise(
+    Total_Count = n(),  
+    Heart_Attack_Count = sum(Heart_Attack_Occurrence),  
+    Heart_Attack_Rate = mean(Heart_Attack_Occurrence)  
+  )
+
+print(stress_impact)
+
+
+ggplot(stress_impact, aes(x = Stress_Category, y = Heart_Attack_Rate, group = 1)) +
+  geom_line(color = "red", size = 1) +  
+  geom_point(color = "red", size = 3) +  
+  geom_text(aes(label = round(Heart_Attack_Rate, 4)),  
+            vjust = -0.5, size = 5, color = "black") +  
+  theme_minimal() +
+  labs(title = "Heart Attack Rate by Stress Level",
+       x = "Stress Level Category",
+       y = "Heart Attack Rate")
+
+
+```
+
+Heart Attack Rate Across Stress Levels:
+
+The heart attack rate is highest in the low stress category (10.73%).
+
+The moderate stress category has a slightly lower heart attack rate (9.99%).
+
+The high stress category has the lowest heart attack rate (9.42%).
+
+## EDA6 Exploring the impact of lifestyle (level of physical activity\\dietary quality\\alcohol intake) on the onset of heart disease
+
+### 1. The impact of physical activity level on heart attack
+
+```{r}
+
+df <- df %>%
+  mutate(
+    Physical_Activity = factor(Physical_Activity, levels = c("Low", "Moderate", "High")),
+    Heart_Attack_Occurrence = as.numeric(Heart_Attack_Occurrence == "Yes")
+  )
+
+
+ggplot(df, aes(x = Heart_Attack_Occurrence, y = Physical_Activity, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 2, rel_min_height = 0.01) +
+  scale_fill_viridis_c() +  
+  theme_minimal() +
+  labs(title = "Heart Attack Occurrence Distribution by Physical Activity Level",
+       x = "Heart Attack Occurrence Probability",
+       y = "Physical Activity Level",
+       fill = "Probability")
+
+```
+
+The distribution of heart attack occurrence probability is similar across different physical activity levels (High, Moderate, Low).
+
+### 2. The impact of Dietary quality on heart attack
+
+```{r}
+
+df <- df %>%
+  mutate(
+    Diet_Quality = factor(Diet_Quality, levels = c("Poor", "Average", "Good")),
+    Heart_Attack_Occurrence = as.numeric(Heart_Attack_Occurrence == "Yes")
+  )
+
+
+ggplot(df, aes(x = Heart_Attack_Occurrence, y = Diet_Quality, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 2, rel_min_height = 0.01) +
+  scale_fill_viridis_c() +  
+  theme_minimal() +
+  labs(title = "Heart Attack Occurrence Distribution by Diet Quality",
+       x = "Heart Attack Occurrence Probability",
+       y = "Diet Quality",
+       fill = "Probability")
+
+```
+
+All three categories show overlapping probability distributions, meaning diet quality alone may not be a decisive factor for heart attack occurrence.
+
+```{r}
+
+df <- df %>%
+  mutate(
+    Alcohol_Consumption = factor(Alcohol_Consumption, levels = c("None", "Low", "Moderate", "High")),
+    Heart_Attack_Occurrence = as.numeric(Heart_Attack_Occurrence == "Yes")
+  )
+
+
+ggplot(df, aes(x = Heart_Attack_Occurrence, y = Alcohol_Consumption, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 2, rel_min_height = 0.01) +
+  scale_fill_viridis_c() +  
+  theme_minimal() +
+  labs(title = "Heart Attack Occurrence Distribution by Alcohol Consumption Level",
+       x = "Heart Attack Occurrence Probability",
+       y = "Alcohol Consumption Level",
+       fill = "Probability")
+
+```
+
+The distribution **remains centered** around a similar probability range for all levels of alcohol consumption.
+
+## Summary and conclusion
+
+In this analysis, we explored various factors related to heart attack occurrence, including age, gender, lifestyle choices, and health conditions. Through data visualization and statistical modeling, we examined their potential impact on heart disease risk. The key findings are:
+
+Age and Heart Attack Risk: Heart attack occurrence is not strictly increasing with age. While the absolute number of cases is relatively stable across age groups, the heart attack rate is lowest in the youngest group (18-35) and peaks in the 51-65 age group before slightly decreasing in the oldest (66-80) group.
+
+Gender Influence: Males have a slightly higher heart attack rate (10.2%) compared to females (9.6%). Though the difference is small, it suggests a minor gender-based variation in heart attack susceptibility.
+
+Impact of Health Conditions: Individuals with a history of smoking, diabetes, and hypertension show slightly higher heart attack rates compared to those without these conditions. Among these, diabetes has the most noticeable effect, with a heart attack rate of 10.33% for diabetics versus 9.76% for non-diabetics.
+
+Cholesterol and BMI Effects: The average cholesterol levels and BMI values between individuals who experienced heart attacks and those who did not are nearly identical.
+
+Lifestyle Factors: The influence of physical activity, diet quality, and alcohol consumption on heart attack occurrence appears to be minimal. The probability distributions for heart attack occurrences remain similar across all categories within these factors, suggesting that none of them are strong standalone predictors of heart attacks.
+
+Given the weak correlations and the non-significant predictors in logistic regression, further studies with more comprehensive datasets and additional health indicators may be necessary to develop a more accurate risk assessment model for heart attacks. Statistical hypothesis testing and more advanced modeling techniques could provide deeper insights into the complex relationships between these factors and heart disease risk.
+
+At last, this exercise was a helpful way to practice presenting data effectively, and create data visualization.
+
+## Reference:
+
+-   [Code Book](https://webfs.oecd.org/pisa2022/CY08MSP_CODEBOOK_5thDecember23.xlsx)
+
+-   [LEW YING ZHEN SERENA](https://isss608-spacebun.netlify.app/take-home_ex/take-home_ex1/take-home_ex1)
