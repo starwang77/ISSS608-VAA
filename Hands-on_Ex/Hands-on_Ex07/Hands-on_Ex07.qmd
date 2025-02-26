@@ -198,7 +198,7 @@ if (nrow(top4_attacks) > 0) {
              wkday, 
              fill = n)) + 
     geom_tile(color = "white", 
-              size = 0.1) + 
+              linewidth = 0.1) + 
     theme_tufte(base_family = "Helvetica") + 
     coord_equal() +
     scale_fill_gradient(name = "# of attacks",
