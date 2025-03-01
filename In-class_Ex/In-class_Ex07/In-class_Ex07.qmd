@@ -1,0 +1,543 @@
+---
+title: "In-class_Ex07"
+author: "WANG XINGYUN"
+---
+
+```{r}
+pacman::p_load(scales, tidyverse, tsibble, feasts, fable, seasonal, urca)
+```
+
+```{r}
+ts_data <- read_csv("data/visitor_arrivals_by_air.csv")
+```
+
+```{r}
+ts_data$`Month-Year` <- dmy(
+  ts_data$`Month-Year`)
+```
+
+```{r}
+ts_data
+```
+
+```{r}
+ts_data_ts <- ts(ts_data)
+head(ts_data_ts)
+```
+
+```{r}
+ts_tsibble <- ts_data %>%
+  mutate(Month = yearmonth(`Month-Year`)) %>%
+  as_tsibble(index = `Month`)
+```
+
+```{r}
+ts_tsibble
+```
+
+```{r}
+ts_longer <- ts_data %>%
+  pivot_longer(cols = c(2:34),
+               names_to = "Country",
+               values_to = "Arrivals")
+```
+
+```{r}
+ts_longer %>%
+  filter(Country == "Vietnam") %>%
+  ggplot(aes(x = `Month-Year`, 
+             y = Arrivals))+
+  geom_line(size = 0.5)
+```
+
+```{r}
+ggplot(data = ts_longer, 
+       aes(x = `Month-Year`, 
+           y = Arrivals,
+           color = Country))+
+  geom_line(size = 0.5) +
+  theme(legend.position = "bottom", 
+        legend.box.spacing = unit(0.5, "cm"))
+```
+
+```{r}
+ggplot(data = ts_longer, 
+       aes(x = `Month-Year`, 
+           y = Arrivals))+
+  geom_line(size = 0.5) +
+  facet_wrap(~ Country,
+             ncol = 3,
+             scales = "free_y") +
+  theme_bw()
+```
+
+```{r}
+tsibble_longer <- ts_tsibble %>%
+  pivot_longer(cols = c(2:34),
+               names_to = "Country",
+               values_to = "Arrivals")
+```
+
+```{r}
+tsibble_longer %>%
+  filter(Country == "Italy" |
+         Country == "Vietnam" |
+         Country == "United Kingdom" |
+         Country == "Germany") %>% 
+  gg_season(Arrivals)
+```
+
+```{r}
+tsibble_longer %>%
+  filter(Country == "Vietnam" |
+         Country == "Italy") %>% 
+  autoplot(Arrivals) + 
+  facet_grid(Country ~ ., scales = "free_y")
+```
+
+In the code chunk below, cycle plots using [`gg_subseries()`](https://feasts.tidyverts.org/reference/gg_subseries.html) of feasts package are created. Notice that the cycle plots show not only seasonal patterns but also trend.
+
+```{r}
+tsibble_longer %>%
+  filter(Country == "Vietnam" |
+         Country == "Italy") %>% 
+  gg_subseries(Arrivals)
+```
+
+### **Single time series decomposition**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam") %>%
+  ACF(Arrivals) %>% 
+  autoplot()
+```
+
+```{r}
+tsibble_longer %>%
+  filter(`Country`== "Vietnam") %>%
+  PACF(Arrivals) %>% 
+  autoplot()
+```
+
+### **Multiple time-series decomposition**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam" |
+         `Country` == "Italy" |
+         `Country` == "United Kingdom" |
+         `Country` == "China") %>%
+  ACF(Arrivals) %>%
+  autoplot()
+```
+
+On the other hand, code chunk below is used to prepare a trellis plot of PACFs for visitor arrivals from Vietnam, Italy, United Kingdom and China.
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam" |
+         `Country` == "Italy" |
+         `Country` == "United Kingdom" |
+         `Country` == "China") %>%
+  PACF(Arrivals) %>%
+  autoplot()
+```
+
+### **Composite plot of time series decomposition**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam") %>%
+  gg_tsdisplay(Arrivals)
+```
+
+### **19.6.1 Visual STL diagnostics with feasts**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam") %>%
+  model(stl = STL(Arrivals)) %>%
+  components() %>%
+  autoplot()
+```
+
+### **Classical Decomposition with feasts**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam") %>%
+  model(
+    classical_decomposition(
+      Arrivals, type = "additive")) %>%
+  components() %>%
+  autoplot()
+```
+
+## **Visual Forecasting**
+
+### **19.7.1 Time Series Data Sampling**
+
+First, an extra column called *Type* indicating training or hold-out will be created by using `mutate()` of **dplyr** package. It will be extremely useful for subsequent data visualisation.
+
+```{r}
+vietnam_ts <- tsibble_longer %>%
+  filter(Country == "Vietnam") %>% 
+  mutate(Type = if_else(
+    `Month-Year` >= "2019-01-01", 
+    "Hold-out", "Training"))
+```
+
+Next, a training data set is extracted from the original data set by using `filter()` of **dplyr** package.
+
+```{r}
+vietnam_train <- vietnam_ts %>%
+  filter(`Month-Year` < "2019-01-01")
+```
+
+### **19.7.2 Exploratory Data Analysis (EDA): Time Series Data**
+
+Before fitting forecasting models, it is a good practice to analysis the time series data by using EDA methods.
+
+```{r}
+vietnam_train %>%
+  model(stl = STL(Arrivals)) %>%
+  components() %>%
+  autoplot()
+```
+
+### **19.7.3 Fitting forecasting models**
+
+#### 19.7.3.1 Fitting Exponential Smoothing State Space (ETS) Models: fable methods
+
+In fable, Exponential Smoothing State Space Models are supported by [`ETS()`](https://fable.tidyverts.org/reference/ETS.html). The combinations are specified through the formula:
+
+```{r}
+fit_ses <- vietnam_train %>%
+  model(ETS(Arrivals ~ error("A") 
+            + trend("N") 
+            + season("N")))
+fit_ses
+```
+
+```{r}
+gg_tsresiduals(fit_ses)
+```
+
+```{r}
+fit_ses %>%
+  report()
+```
+
+#### 19.7.3.5 Fitting ETS Methods with Trend: Holt’s Linear
+
+#### 19.7.3.6 Trend methods
+
+```{r}
+vietnam_H <- vietnam_train %>%
+  model(`Holt's method` = 
+          ETS(Arrivals ~ error("A") +
+                trend("A") + 
+                season("N")))
+vietnam_H %>% report()
+```
+
+#### 19.7.3.7 Damped Trend methods
+
+```{r}
+vietnam_HAd <- vietnam_train %>%
+  model(`Holt's method` = 
+          ETS(Arrivals ~ error("A") +
+                trend("Ad") + 
+                season("N")))
+vietnam_HAd %>% report()
+```
+
+#### 19.7.3.8 Checking for results
+
+Check the model assumptions with residuals plots.
+
+```{r}
+gg_tsresiduals(vietnam_H)
+```
+
+```{r}
+gg_tsresiduals(vietnam_HAd)
+```
+
+### **19.7.4 Fitting ETS Methods with Season: Holt-Winters**
+
+```{r}
+Vietnam_WH <- vietnam_train %>%
+  model(
+    Additive = ETS(Arrivals ~ error("A") 
+                   + trend("A") 
+                   + season("A")),
+    Multiplicative = ETS(Arrivals ~ error("M") 
+                         + trend("A") 
+                         + season("M"))
+    )
+
+Vietnam_WH %>% report()
+```
+
+### **19.7.5 Fitting multiple ETS Models**
+
+```{r}
+fit_ETS <- vietnam_train %>%
+  model(`SES` = ETS(Arrivals ~ error("A") + 
+                      trend("N") + 
+                      season("N")),
+        `Holt`= ETS(Arrivals ~ error("A") +
+                      trend("A") +
+                      season("N")),
+        `damped Holt` = 
+          ETS(Arrivals ~ error("A") +
+                trend("Ad") + 
+                season("N")),
+        `WH_A` = ETS(
+          Arrivals ~ error("A") + 
+            trend("A") + 
+            season("A")),
+        `WH_M` = ETS(Arrivals ~ error("M") 
+                         + trend("A") 
+                         + season("M"))
+  )
+```
+
+### **19.7.6 The model coefficient**
+
+[`tidy()`](https://r4va.netlify.app/chap19) of fabletools is be used to extract model coefficients from a mable.
+
+```{r}
+fit_ETS %>%
+  tidy()
+```
+
+### **19.7.7 Step 4: Model Comparison**
+
+`glance()` of fabletool
+
+```{r}
+fit_ETS %>% 
+  report()
+```
+
+### **19.7.8 Step 5: Forecasting future values**
+
+To forecast the future values, `forecast()` of fable will be used. Notice that the forecast period is 12 months.
+
+```{r}
+fit_ETS %>%
+  forecast(h = "12 months") %>%
+  autoplot(vietnam_ts, 
+           level = NULL)
+```
+
+### **19.7.9 Fitting ETS Automatically**
+
+```{r}
+fit_autoETS <- vietnam_train %>%
+  model(ETS(Arrivals))
+fit_autoETS %>% report()
+```
+
+### **19.7.10 Fitting Fitting ETS Automatically**
+
+Next, we will check the model assumptions with residuals plots by using `gg_tsresiduals()` of **feasts** package
+
+```{r}
+gg_tsresiduals(fit_autoETS)
+```
+
+### **19.7.11 Forecast the future values**
+
+In the code chunk below, `forecast()` of **fable** package is used to forecast the future values. Then, `autoplot()` of **feasts** package is used to see the training data along with the forecast values.
+
+```{r}
+fit_autoETS %>%
+  forecast(h = "12 months") %>%
+  autoplot(vietnam_train)
+```
+
+### **19.7.12 Visualising AutoETS model with ggplot2**
+
+There are time that we are interested to visualise relationship between training data and fit data and forecasted values versus the hold-out data.
+
+### **19.7.13 Visualising AutoETS model with ggplot2**
+
+Code chunk below is used to create the data visualisation in previous slide
+
+```{r}
+fc_autoETS <- fit_autoETS %>%
+  forecast(h = "12 months")
+
+vietnam_ts %>%
+  ggplot(aes(x=`Month`, 
+             y=Arrivals)) +
+  autolayer(fc_autoETS, 
+            alpha = 0.6) +
+  geom_line(aes(
+    color = Type), 
+    alpha = 0.8) + 
+  geom_line(aes(
+    y = .mean, 
+    colour = "Forecast"), 
+    data = fc_autoETS) +
+  geom_line(aes(
+    y = .fitted, 
+    colour = "Fitted"), 
+    data = augment(fit_autoETS))
+```
+
+## **19.8 AutoRegressive Integrated Moving Average(ARIMA) Methods for Time Series Forecasting: fable (tidyverts) methods**
+
+### **19.8.1 Visualising Autocorrelations: feasts methods**
+
+**feasts** package provides a very handy function for visualising ACF and PACF of a time series called [`gg_tsdiaply()`](https://feasts.tidyverts.org/reference/gg_tsdisplay.html).
+
+```{r}
+vietnam_train %>%
+  gg_tsdisplay(plot_type='partial')
+```
+
+### **19.8.2 Visualising Autocorrelations: feasts methods**
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "Vietnam") %>%
+  ACF(Arrivals) %>% 
+  autoplot()
+```
+
+```{r}
+tsibble_longer %>%
+  filter(`Country` == "United Kingdom") %>%
+  ACF(Arrivals) %>% 
+  autoplot()
+```
+
+### **19.8.3 Differencing: fable methods**
+
+#### 19.8.3.1 Trend differencing
+
+```{r}
+tsibble_longer %>%
+  filter(Country == "Vietnam") %>%
+  gg_tsdisplay(difference(
+    Arrivals,
+    lag = 1), 
+    plot_type='partial')
+```
+
+#### 19.8.3.2 Seasonal differencing
+
+```{r}
+tsibble_longer %>%
+  filter(Country == "Vietnam") %>%
+  gg_tsdisplay(difference(
+    Arrivals,
+    difference = 12), 
+    plot_type='partial')
+```
+
+### **19.8.4 Fitting ARIMA models manually: fable methods**
+
+```{r}
+fit_arima <- vietnam_train %>%
+  model(
+    arima200 = ARIMA(Arrivals ~ pdq(2,0,0)),
+    sarima210 = ARIMA(Arrivals ~ pdq(2,0,0) + 
+                        PDQ(2,1,0))
+    )
+report(fit_arima)
+```
+
+### **19.8.5 Fitting ARIMA models automatically: fable methods**
+
+```{r}
+fit_autoARIMA <- vietnam_train %>%
+  model(ARIMA(Arrivals))
+report(fit_autoARIMA)
+```
+
+### **19.8.7 Forecast Multiple Time Series**
+
+In this section, we will perform time series forecasting on multiple time series at one goal. For the purpose of the hand-on exercise, visitor arrivals from five selected ASEAN countries will be used.
+
+First, `filter()` is used to extract the selected countries’ data.
+
+```{r}
+ASEAN <- tsibble_longer %>%
+  filter(Country == "Vietnam" |
+         Country == "Malaysia" |
+         Country == "Indonesia" |
+         Country == "Thailand" |
+         Country == "Philippines")
+```
+
+```{r}
+ASEAN_train <- ASEAN %>%
+  mutate(Type = if_else(
+    `Month-Year` >= "2019-01-01", 
+    "Hold-out", "Training")) %>%
+  filter(Type == "Training")
+```
+
+### **19.8.8 Fitting Mulltiple Time Series**
+
+In the code chunk below auto ETS and ARIMA models are fitted by using `model()`.
+
+```{r}
+ASEAN_fit <- ASEAN_train %>%
+  model(
+    ets = ETS(Arrivals),
+    arima = ARIMA(Arrivals)
+  )
+```
+
+### **19.8.9 Examining Models**
+
+The `glance()` of **fabletools** provides a one-row summary of each model, and commonly includes descriptions of the model’s fit such as the residual variance and information criteria.
+
+```{r}
+ASEAN_fit %>%
+  glance()
+```
+
+### **19.8.10 Extracintg fitted and residual values**
+
+The fitted values and residuals from a model can obtained using fitted() and residuals() respectively. Additionally, the augment() function may be more convenient, which provides the original data along with both fitted values and their residuals.
+
+```{r}
+ASEAN_fit %>%
+  augment()
+```
+
+### **19.8.11 Comparing Fit Models**
+
+In the code chunk below, `accuracy()` is used to compare the performances of the models.
+
+```{r}
+ASEAN_fit %>%
+  accuracy() %>%
+  arrange(Country)
+```
+
+### **19.8.12 Forecast Future Values**
+
+Forecasts from these models can be produced directly as our specified models do not require any additional data.
+
+```{r}
+ASEAN_fc <- ASEAN_fit %>%
+  forecast(h = "12 months")
+```
+
+### **19.8.13 Visualising the forecasted values**
+
+In the code chunk below `autoplot()` of feasts package is used to plot the raw and fitted values.
+
+```{r}
+ASEAN_fc %>%
+  autoplot(ASEAN)
+```

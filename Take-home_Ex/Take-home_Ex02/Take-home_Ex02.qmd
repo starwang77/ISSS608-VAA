@@ -1,0 +1,36 @@
+---
+title: "Take-home_Ex02"
+author: "WANG XINGYUN"
+---
+
+# **Take-home Exercise 2: Be Tradewise or Otherwise**
+
+## **Overview**
+
+We try to apply newly acquired techniques to explore and analyze the changing trends and patterns of Singapore’s international trade since 2015.
+
+### **Setting the scene**
+
+## Our task
+
+## Getting started
+
+### load package
+
+For this exercise, we load the following R packages using the `pacman::p_load()` function, R packages including: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.
+
+```{r}
+pacman::p_load(scales, viridis, lubridate, ggthemes,
+               gridExtra, readxl, knitr, data.table,
+               CGPfunctions, ggHoriPlot, tidyverse)
+```
+
+we can download 3 files (M451491, M451501, M451511) from the website (download [Merchandise Trade by Region/Market](https://www.singstat.gov.sg/find-data/search-by-theme/trade-and-investment/merchandise-trade/latest-data) from [Department of Statistics Singapore, DOS](https://www.singstat.gov.sg/)), and the 3 files represent different data, as shown below
+
+M451491-Merchandise Trade By Region and Selected Market (Imports), Monthly
+
+M451501-Merchandise Trade By Region and Selected Market (Domestic Exports),Monthly
+
+M451511-Merchandise Trade By Region and Selected Market (Re-Exports), Monthly
+
+### Import data
