@@ -34,3 +34,69 @@ M451501-Merchandise Trade By Region and Selected Market (Domestic Exports),Month
 M451511-Merchandise Trade By Region and Selected Market (Re-Exports), Monthly
 
 ### Import data
+
+```{r}
+df_Im <- read_csv("data/M451491.csv", skip = 10, show_col_types = FALSE)
+head(df_Im)
+```
+
+```{r}
+df_DE <- read_csv("data/M451501.csv", skip = 10, show_col_types = FALSE)
+df_RE <- read_csv("data/M451511.csv", skip = 10, show_col_types = FALSE)
+head(df_DE)
+head(df_RE)
+```
+
+After viewing the whole table, we should change the type of date series.
+
+First column (Data Series): Country/Region Name, Subsequent columns: Monthly data, such as "2025 Jan", "2024 Dec", "2024 Nov", representing trade data for different months.
+
+The column name is in YYYY Mon format (needs to be converted to standard time format YYYY-MM). Data needs to be converted to Long Format for time series analysis.
+
+```{r}
+# rename "Data Series" as "Country"
+colnames(df_Im)[1] <- "Country"
+colnames(df_DE)[1] <- "Country"
+colnames(df_RE)[1] <- "Country"
+
+# Extract time column names and convert them to YYYY-MM format
+time_cols <- colnames(df_Im)[-1]  
+time_cols_cleaned <- format(parse_date_time(time_cols, orders = "ym"), "%Y-%m")
+
+colnames(df_Im)[-1] <- time_cols_cleaned
+colnames(df_DE)[-1] <- time_cols_cleaned
+colnames(df_RE)[-1] <- time_cols_cleaned
+
+head(df_Im)
+```
+
+At present, the data is in Wide Format, and we need to convert it to Long Format for time series analysis:
+
+```{r}
+# 转换为长表格式
+df_Im_long <- df_Im %>%
+  pivot_longer(cols = -Country, names_to = "Date", values_to = "Trade_Value")
+
+df_DE_long <- df_DE %>%
+  pivot_longer(cols = -Country, names_to = "Date", values_to = "Trade_Value")
+
+df_RE_long <- df_RE %>%
+  pivot_longer(cols = -Country, names_to = "Date", values_to = "Trade_Value")
+
+# 确保 Date 列是日期格式
+df_Im_long$Date <- as.Date(paste0(df_Im_long$Date, "-01"))  # 转换为 YYYY-MM-DD
+df_DE_long$Date <- as.Date(paste0(df_DE_long$Date, "-01"))
+df_RE_long$Date <- as.Date(paste0(df_RE_long$Date, "-01"))
+
+# 查看转换后的数据
+head(df_Im_long)
+
+```
+
+Save the cleaned data
+
+```{r}
+write_csv(df_Im_long, "data/cleaned_Im.csv")
+write_csv(df_DE_long, "data/cleaned_DE.csv")
+write_csv(df_RE_long, "data/cleaned_RE.csv")
+```
