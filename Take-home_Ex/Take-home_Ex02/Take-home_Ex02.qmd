@@ -5,17 +5,17 @@ author: "WANG XINGYUN"
 
 # **Take-home Exercise 2: Be Tradewise or Otherwise**
 
-## **Overview**
+## **1. Overview**
 
 We try to apply newly acquired techniques to explore and analyze the changing trends and patterns of Singapore’s international trade since 2015.
 
-### **Setting the scene**
+## **2. Setting the scene**
 
-## Our task
+## 3. Our task
 
-## Getting started
+## 4. Getting started
 
-### load package
+### 4.1 load package
 
 For this exercise, we load the following R packages using the `pacman::p_load()` function, R packages including: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.
 
@@ -33,7 +33,7 @@ M451501-Merchandise Trade By Region and Selected Market (Domestic Exports),Month
 
 M451511-Merchandise Trade By Region and Selected Market (Re-Exports), Monthly
 
-### Import data
+### 4.2 Import data
 
 ```{r}
 df_Im <- read_csv("data/M451491.csv", skip = 10, show_col_types = FALSE)
@@ -73,7 +73,6 @@ head(df_Im)
 At present, the data is in Wide Format, and we need to convert it to Long Format for time series analysis:
 
 ```{r}
-# 转换为长表格式
 df_Im_long <- df_Im %>%
   pivot_longer(cols = -Country, names_to = "Date", values_to = "Trade_Value")
 
@@ -83,14 +82,14 @@ df_DE_long <- df_DE %>%
 df_RE_long <- df_RE %>%
   pivot_longer(cols = -Country, names_to = "Date", values_to = "Trade_Value")
 
-# 确保 Date 列是日期格式
-df_Im_long$Date <- as.Date(paste0(df_Im_long$Date, "-01"))  # 转换为 YYYY-MM-DD
+
+df_Im_long$Date <- as.Date(paste0(df_Im_long$Date, "-01"))  # YYYY-MM-DD
 df_DE_long$Date <- as.Date(paste0(df_DE_long$Date, "-01"))
 df_RE_long$Date <- as.Date(paste0(df_RE_long$Date, "-01"))
 
-# 查看转换后的数据
 head(df_Im_long)
-
+head(df_DE_long)
+head(df_RE_long)
 ```
 
 Save the cleaned data
@@ -100,3 +99,116 @@ write_csv(df_Im_long, "data/cleaned_Im.csv")
 write_csv(df_DE_long, "data/cleaned_DE.csv")
 write_csv(df_RE_long, "data/cleaned_RE.csv")
 ```
+
+After completing the data cleaning, we began to gradually complete the task.
+
+## 5. Evaluate and design data visualization
+
+#### **First Data Visualization - MERCHANDISE TRADE PERFORMANCE WITH MAJOR TRADING PARTNERS, 2024**
+
+![](images/clipboard-3932932267.png)
+
+#### Pros:
+
+Intuitively displays the import and export situation of major trading partners. The size of the bubble represents the trade volume, which is clear at a glance. Colors distinguish the proportion of imports and exports for easy comparison.
+
+#### Cons:
+
+Difficulty in accurately comparing bubble sizes.
+
+Large space occupation, unable to display more countries.
+
+Time trend not shown, limited to 2024
+
+#### Sketches of the make-over
+
+#### Improved version: Total trade volume by region/market
+
+first, merge export from the two file
+
+```{r}
+
+df_DE <- read_csv("data/cleaned_DE.csv") 
+df_RE <- read_csv("data/cleaned_RE.csv")  
+
+
+df_DE <- df_DE %>% mutate(Date = as.Date(Date))
+df_RE <- df_RE %>% mutate(Date = as.Date(Date))
+
+
+df_merged_export <- full_join(df_DE, df_RE, by = c("Country", "Date"), suffix = c("_DE", "_RE"))
+
+df_merged_export <- df_merged_export %>%
+  mutate(Export_Trade_Value = coalesce(Trade_Value_DE, 0) + coalesce(Trade_Value_RE, 0))
+
+
+df_merged_export <- df_merged_export %>%
+  select(Country, Date, Trade_Value_DE, Trade_Value_RE, Export_Trade_Value)
+
+write_csv(df_merged_export, "data/merged_export.csv")
+```
+
+```{r}
+
+df_Im <- read_csv("data/cleaned_Im.csv")
+df_merged_export <- read_csv("data/merged_export.csv")
+
+
+exclude_regions <- c("Total All Markets", "America", "Asia", "Europe", "Oceania", "Africa")
+df_Im <- df_Im %>% filter(!Country %in% exclude_regions)
+df_merged_export <- df_merged_export %>% filter(!Country %in% exclude_regions)
+
+
+df_Im <- df_Im %>% mutate(Date = as.Date(Date))
+df_merged_export <- df_merged_export %>% mutate(Date = as.Date(Date))
+
+
+df_Im_2024 <- df_Im %>% filter(format(Date, "%Y") == "2024")
+df_merged_export_2024 <- df_merged_export %>% filter(format(Date, "%Y") == "2024")
+
+
+df_Im_agg <- df_Im_2024 %>% group_by(Country) %>% summarise(Import = sum(Trade_Value, na.rm = TRUE)/1000)
+df_merged_export_agg <- df_merged_export_2024 %>% group_by(Country) %>% summarise(Export = sum(Export_Trade_Value, na.rm = TRUE)/1000)
+
+
+df_total_trade <- left_join(df_Im_agg, df_merged_export_agg, by = "Country") %>%
+  mutate(Total_Trade = Import + Export)
+
+
+top_10_trade_partners <- df_total_trade %>%
+  arrange(desc(Total_Trade)) %>%
+  slice(1:10)
+
+
+df_long <- top_10_trade_partners %>%
+  select(Country, Import, Export) %>%
+  pivot_longer(cols = c("Import", "Export"), names_to = "Trade_Type", values_to = "Value")
+
+
+ggplot(df_long, aes(x = reorder(Country, -Value), y = Value, fill = Trade_Type)) +
+  geom_bar(stat = "identity") +
+  
+  geom_text(aes(label = round(Value, 1)), position = position_stack(vjust = 0.5), size = 3, color = "white") +
+  
+  geom_text(data = top_10_trade_partners, 
+            aes(x = Country, y = Total_Trade, label = paste0("Total: ", round(Total_Trade, 1))),
+            vjust = -0.5, size = 3, fontface = "bold", inherit.aes = FALSE) +
+
+  labs(title = "Singapore's Top 10 Trading Partners (2024)",
+       x = "Country",
+       y = "Trade Value (S$ Billion)",
+       fill = "Trade Type") +
+  
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 8, face = "italic"),
+    legend.position = "top",
+    legend.title = element_blank()
+  )
+
+```
+
+But after the merger, I think we should display re export and domestic export separately.
