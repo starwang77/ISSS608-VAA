@@ -43,8 +43,10 @@ head(df_Im)
 ```{r}
 df_DE <- read_csv("data/M451501.csv", skip = 10, show_col_types = FALSE)
 df_RE <- read_csv("data/M451511.csv", skip = 10, show_col_types = FALSE)
+df_commodity <- read_csv("data/M451001.csv", skip = 10, show_col_types = FALSE)
 head(df_DE)
 head(df_RE)
+head(df_commodity)
 ```
 
 After viewing the whole table, we should change the type of date series.
@@ -104,7 +106,7 @@ After completing the data cleaning, we began to gradually complete the task.
 
 ## 5. Evaluate and design data visualization
 
-#### **First Data Visualization - MERCHANDISE TRADE PERFORMANCE WITH MAJOR TRADING PARTNERS, 2024**
+#### **5.1 First Data Visualization - MERCHANDISE TRADE PERFORMANCE WITH MAJOR TRADING PARTNERS, 2024**
 
 ![](images/clipboard-3932932267.png)
 
@@ -211,4 +213,51 @@ ggplot(df_long, aes(x = reorder(Country, -Value), y = Value, fill = Trade_Type))
 
 ```
 
-But after the merger, I think we should display re export and domestic export separately.
+We will create an interactive chart in shinyapp that allows viewers to select a year and see the top 10 trade partners of each year.
+
+[Shinyapp - Click here to view the interactive Shiny app](https://wangxingyun.shinyapps.io/take_home_Ex02/)
+
+#### **5.2 Second Data Visualization** 
+
+We need to download the file (M451001)-Merchandise Trade By Commodity Section, (At Current Prices), Monthly
+
+![优缺点：](images/clipboard-1600194320.png)
+
+Improve version
+
+First we have to clean dataset follow the code.
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+df_commodity <- read_csv("data/M451001.csv", skip = 10, show_col_types = FALSE)
+
+colnames(df_commodity)[1] <- "Category"
+
+
+time_cols <- colnames(df_commodity)[-1]
+
+
+valid_time_cols <- time_cols[!is.na(parse_date_time(time_cols, orders = c("Y b", "b Y")))]
+time_cols_cleaned <- format(parse_date_time(valid_time_cols, orders = c("Y b", "b Y")), "%Y-%m")
+
+colnames(df_commodity) <- c("Category", time_cols_cleaned)
+
+columns_to_keep <- c("Category", time_cols_cleaned[year(parse_date_time(time_cols_cleaned, orders = "ym")) >= 2010 & 
+                                                    year(parse_date_time(time_cols_cleaned, orders = "ym")) <= 2025])
+
+df_filtered <- df_commodity %>%
+  select(all_of(columns_to_keep))
+
+df_import <- df_filtered[19:27, ] %>% mutate(Type = "Import")
+df_export <- df_filtered[33:41, ] %>% mutate(Type = "Export")
+
+df_cleaned <- bind_rows(df_import, df_export)
+
+df_long <- df_cleaned %>%
+  pivot_longer(cols = -c(Category, Type), names_to = "Date", values_to = "Trade_Value")
+
+print(head(df_long))
+write_csv(df_long, "data/cleaned_com.csv")
+```

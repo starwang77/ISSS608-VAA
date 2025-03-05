@@ -363,7 +363,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_DE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/M451501.csv"</span>, <span class="at">skip =</span> <span class="dv">10</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_RE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/M451511.csv"</span>, <span class="at">skip =</span> <span class="dv">10</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_DE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_commodity <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/M451001.csv"</span>, <span class="at">skip =</span> <span class="dv">10</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_DE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 266
   `Data Series`       `2025 Jan` `2024 Dec` `2024 Nov` `2024 Oct` `2024 Sep`
@@ -401,25 +402,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #   `2023 Jan` &lt;dbl&gt;, `2022 Dec` &lt;dbl&gt;, `2022 Nov` &lt;dbl&gt;, `2022 Oct` &lt;dbl&gt;,
 #   `2022 Sep` &lt;dbl&gt;, `2022 Aug` &lt;dbl&gt;, `2022 Jul` &lt;dbl&gt;, `2022 Jun` &lt;dbl&gt;, …</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_commodity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 734
+  `Data Series`           `2025 Jan` `2024 Dec` `2024 Nov` `2024 Oct` `2024 Sep`
+  &lt;chr&gt;                        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+1 Total Merchandise Trad… 114153980. 116278793. 110132324. 107525960. 103512460.
+2 Oil                      19490290.  18488974.  18061885.  17510050.  15686654.
+3 Petroleum                16418934.  15564654.  14910686.  14804334.  12611958.
+4 Oil Bunkers               3071356.   2924319.   3151200.   2705716.   3074695.
+5 Non-Oil                  94663690.  97789819.  92070439.  90015910.  87825806.
+6 Food &amp; Live Animals       2460911.   2704579.   2237326.   2344745.   2235005.
+# ℹ 728 more variables: `2024 Aug` &lt;dbl&gt;, `2024 Jul` &lt;dbl&gt;, `2024 Jun` &lt;dbl&gt;,
+#   `2024 May` &lt;dbl&gt;, `2024 Apr` &lt;dbl&gt;, `2024 Mar` &lt;dbl&gt;, `2024 Feb` &lt;dbl&gt;,
+#   `2024 Jan` &lt;dbl&gt;, `2023 Dec` &lt;dbl&gt;, `2023 Nov` &lt;dbl&gt;, `2023 Oct` &lt;dbl&gt;,
+#   `2023 Sep` &lt;dbl&gt;, `2023 Aug` &lt;dbl&gt;, `2023 Jul` &lt;dbl&gt;, `2023 Jun` &lt;dbl&gt;,
+#   `2023 May` &lt;dbl&gt;, `2023 Apr` &lt;dbl&gt;, `2023 Mar` &lt;dbl&gt;, `2023 Feb` &lt;dbl&gt;,
+#   `2023 Jan` &lt;dbl&gt;, `2022 Dec` &lt;dbl&gt;, `2022 Nov` &lt;dbl&gt;, `2022 Oct` &lt;dbl&gt;,
+#   `2022 Sep` &lt;dbl&gt;, `2022 Aug` &lt;dbl&gt;, `2022 Jul` &lt;dbl&gt;, `2022 Jun` &lt;dbl&gt;, …</code></pre>
+</div>
 </div>
 <p>After viewing the whole table, we should change the type of date series.</p>
 <p>First column (Data Series): Country/Region Name, Subsequent columns: Monthly data, such as “2025 Jan”, “2024 Dec”, “2024 Nov”, representing trade data for different months.</p>
 <p>The column name is in YYYY Mon format (needs to be converted to standard time format YYYY-MM). Data needs to be converted to Long Format for time series analysis.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename "Data Series" as "Country"</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_Im)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_DE)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_RE)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract time column names and convert them to YYYY-MM format</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>time_cols <span class="ot">&lt;-</span> <span class="fu">colnames</span>(df_Im)[<span class="sc">-</span><span class="dv">1</span>]  </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>time_cols_cleaned <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">parse_date_time</span>(time_cols, <span class="at">orders =</span> <span class="st">"ym"</span>), <span class="st">"%Y-%m"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_Im)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_DE)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_RE)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_Im)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename "Data Series" as "Country"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_Im)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_DE)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_RE)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Country"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract time column names and convert them to YYYY-MM format</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>time_cols <span class="ot">&lt;-</span> <span class="fu">colnames</span>(df_Im)[<span class="sc">-</span><span class="dv">1</span>]  </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>time_cols_cleaned <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">parse_date_time</span>(time_cols, <span class="at">orders =</span> <span class="st">"ym"</span>), <span class="st">"%Y-%m"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_Im)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_DE)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_RE)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> time_cols_cleaned</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_Im)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 266
   Country  `2025-01` `2024-12` `2024-11` `2024-10` `2024-09` `2024-08` `2024-07`
@@ -441,21 +461,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>At present, the data is in Wide Format, and we need to convert it to Long Format for time series analysis:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_Im_long <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>df_DE_long <span class="ot">&lt;-</span> df_DE <span class="sc">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>df_RE_long <span class="ot">&lt;-</span> df_RE <span class="sc">%&gt;%</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>df_Im_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_Im_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))  <span class="co"># YYYY-MM-DD</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>df_DE_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_DE_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>df_RE_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_RE_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_Im_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_Im_long <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>df_DE_long <span class="ot">&lt;-</span> df_DE <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>df_RE_long <span class="ot">&lt;-</span> df_RE <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Country, <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>df_Im_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_Im_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))  <span class="co"># YYYY-MM-DD</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>df_DE_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_DE_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>df_RE_long<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(df_RE_long<span class="sc">$</span>Date, <span class="st">"-01"</span>))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_Im_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   Country           Date       Trade_Value
@@ -467,7 +487,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5 Total All Markets 2024-09-01      49068.
 6 Total All Markets 2024-08-01      49949 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_DE_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_DE_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   Country           Date       Trade_Value
@@ -479,7 +499,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5 Total All Markets 2024-09-01      21967.
 6 Total All Markets 2024-08-01      23984 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_RE_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_RE_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   Country           Date       Trade_Value
@@ -494,9 +514,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Save the cleaned data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_Im_long, <span class="st">"data/cleaned_Im.csv"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_DE_long, <span class="st">"data/cleaned_DE.csv"</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_RE_long, <span class="st">"data/cleaned_RE.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_Im_long, <span class="st">"data/cleaned_Im.csv"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_DE_long, <span class="st">"data/cleaned_DE.csv"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_RE_long, <span class="st">"data/cleaned_RE.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After completing the data cleaning, we began to gradually complete the task.</p>
 </section>
@@ -504,7 +524,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="evaluate-and-design-data-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="evaluate-and-design-data-visualization">5. Evaluate and design data visualization</h2>
 <section id="first-data-visualization---merchandise-trade-performance-with-major-trading-partners-2024" class="level4">
-<h4 class="anchored" data-anchor-id="first-data-visualization---merchandise-trade-performance-with-major-trading-partners-2024"><strong>First Data Visualization - MERCHANDISE TRADE PERFORMANCE WITH MAJOR TRADING PARTNERS, 2024</strong></h4>
+<h4 class="anchored" data-anchor-id="first-data-visualization---merchandise-trade-performance-with-major-trading-partners-2024"><strong>5.1 First Data Visualization - MERCHANDISE TRADE PERFORMANCE WITH MAJOR TRADING PARTNERS, 2024</strong></h4>
 <p><img src="images/clipboard-3932932267.png" class="img-fluid"></p>
 </section>
 <section id="pros" class="level4">
@@ -524,7 +544,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="improved-version-total-trade-volume-by-regionmarket">Improved version: Total trade volume by region/market</h4>
 <p>first, merge export from the two file</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_DE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_DE.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_DE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_DE.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 47965 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
@@ -536,7 +556,7 @@ date (1): Date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_RE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_RE.csv"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_RE <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_RE.csv"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 47965 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
@@ -548,11 +568,11 @@ date (1): Date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_DE <span class="ot">&lt;-</span> df_DE <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df_RE <span class="ot">&lt;-</span> df_RE <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> <span class="fu">full_join</span>(df_DE, df_RE, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Country"</span>, <span class="st">"Date"</span>), <span class="at">suffix =</span> <span class="fu">c</span>(<span class="st">"_DE"</span>, <span class="st">"_RE"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df_DE <span class="ot">&lt;-</span> df_DE <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df_RE <span class="ot">&lt;-</span> df_RE <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> <span class="fu">full_join</span>(df_DE, df_RE, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Country"</span>, <span class="st">"Date"</span>), <span class="at">suffix =</span> <span class="fu">c</span>(<span class="st">"_DE"</span>, <span class="st">"_RE"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in full_join(df_DE, df_RE, by = c("Country", "Date"), suffix = c("_DE", : Detected an unexpected many-to-many relationship between `x` and `y`.
 ℹ Row 42401 of `x` matches multiple rows in `y`.
@@ -560,17 +580,17 @@ date (1): Date
 ℹ If a many-to-many relationship is expected, set `relationship =
   "many-to-many"` to silence this warning.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Export_Trade_Value =</span> <span class="fu">coalesce</span>(Trade_Value_DE, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">coalesce</span>(Trade_Value_RE, <span class="dv">0</span>))</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Country, Date, Trade_Value_DE, Trade_Value_RE, Export_Trade_Value)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_merged_export, <span class="st">"data/merged_export.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Export_Trade_Value =</span> <span class="fu">coalesce</span>(Trade_Value_DE, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">coalesce</span>(Trade_Value_RE, <span class="dv">0</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Country, Date, Trade_Value_DE, Trade_Value_RE, Export_Trade_Value)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_merged_export, <span class="st">"data/merged_export.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_Im.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_Im.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 46905 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
@@ -582,7 +602,7 @@ date (1): Date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/merged_export.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/merged_export.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 51675 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
@@ -594,60 +614,60 @@ date (1): Date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>exclude_regions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Total All Markets"</span>, <span class="st">"America"</span>, <span class="st">"Asia"</span>, <span class="st">"Europe"</span>, <span class="st">"Oceania"</span>, <span class="st">"Africa"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>Country <span class="sc">%in%</span> exclude_regions)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>Country <span class="sc">%in%</span> exclude_regions)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>df_Im_2024 <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>) <span class="sc">==</span> <span class="st">"2024"</span>)</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>df_merged_export_2024 <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>) <span class="sc">==</span> <span class="st">"2024"</span>)</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>df_Im_agg <span class="ot">&lt;-</span> df_Im_2024 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Country) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Import =</span> <span class="fu">sum</span>(Trade_Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>df_merged_export_agg <span class="ot">&lt;-</span> df_merged_export_2024 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Country) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Export =</span> <span class="fu">sum</span>(Export_Trade_Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>df_total_trade <span class="ot">&lt;-</span> <span class="fu">left_join</span>(df_Im_agg, df_merged_export_agg, <span class="at">by =</span> <span class="st">"Country"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_Trade =</span> Import <span class="sc">+</span> Export)</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>top_10_trade_partners <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Total_Trade)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> top_10_trade_partners <span class="sc">%&gt;%</span></span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Country, Import, Export) <span class="sc">%&gt;%</span></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"Import"</span>, <span class="st">"Export"</span>), <span class="at">names_to =</span> <span class="st">"Trade_Type"</span>, <span class="at">values_to =</span> <span class="st">"Value"</span>)</span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Country, <span class="sc">-</span>Value), <span class="at">y =</span> Value, <span class="at">fill =</span> Trade_Type)) <span class="sc">+</span></span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Value, <span class="dv">1</span>)), <span class="at">position =</span> <span class="fu">position_stack</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> top_10_trade_partners, </span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> Country, <span class="at">y =</span> Total_Trade, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Total: "</span>, <span class="fu">round</span>(Total_Trade, <span class="dv">1</span>))),</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Singapore's Top 10 Trading Partners (2024)"</span>,</span>
-<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Country"</span>,</span>
-<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Trade Value (S$ Billion)"</span>,</span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Trade Type"</span>) <span class="sc">+</span></span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">8</span>),</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
-<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">face =</span> <span class="st">"italic"</span>),</span>
-<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
-<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>exclude_regions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Total All Markets"</span>, <span class="st">"America"</span>, <span class="st">"Asia"</span>, <span class="st">"Europe"</span>, <span class="st">"Oceania"</span>, <span class="st">"Africa"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>Country <span class="sc">%in%</span> exclude_regions)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>Country <span class="sc">%in%</span> exclude_regions)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>df_Im_2024 <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>) <span class="sc">==</span> <span class="st">"2024"</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>df_merged_export_2024 <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>) <span class="sc">==</span> <span class="st">"2024"</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>df_Im_agg <span class="ot">&lt;-</span> df_Im_2024 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Country) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Import =</span> <span class="fu">sum</span>(Trade_Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>df_merged_export_agg <span class="ot">&lt;-</span> df_merged_export_2024 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Country) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Export =</span> <span class="fu">sum</span>(Export_Trade_Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>df_total_trade <span class="ot">&lt;-</span> <span class="fu">left_join</span>(df_Im_agg, df_merged_export_agg, <span class="at">by =</span> <span class="st">"Country"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_Trade =</span> Import <span class="sc">+</span> Export)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>top_10_trade_partners <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Total_Trade)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> top_10_trade_partners <span class="sc">%&gt;%</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Country, Import, Export) <span class="sc">%&gt;%</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"Import"</span>, <span class="st">"Export"</span>), <span class="at">names_to =</span> <span class="st">"Trade_Type"</span>, <span class="at">values_to =</span> <span class="st">"Value"</span>)</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Country, <span class="sc">-</span>Value), <span class="at">y =</span> Value, <span class="at">fill =</span> Trade_Type)) <span class="sc">+</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Value, <span class="dv">1</span>)), <span class="at">position =</span> <span class="fu">position_stack</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> top_10_trade_partners, </span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> Country, <span class="at">y =</span> Total_Trade, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Total: "</span>, <span class="fu">round</span>(Total_Trade, <span class="dv">1</span>))),</span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Singapore's Top 10 Trading Partners (2024)"</span>,</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Country"</span>,</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Trade Value (S$ Billion)"</span>,</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Trade Type"</span>) <span class="sc">+</span></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">face =</span> <span class="st">"italic"</span>),</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -656,7 +676,65 @@ date (1): Date
 </div>
 </div>
 </div>
-<p>But after the merger, I think we should display re export and domestic export separately.</p>
+<p>We will create an interactive chart in shinyapp that allows viewers to select a year and see the top 10 trade partners of each year.</p>
+<p><a href="https://wangxingyun.shinyapps.io/take_home_Ex02/">Shinyapp - Click here to view the interactive Shiny app</a></p>
+</section>
+<section id="second-data-visualization" class="level4">
+<h4 class="anchored" data-anchor-id="second-data-visualization"><strong>5.2 Second Data Visualization</strong></h4>
+<p>We need to download the file (M451001)-Merchandise Trade By Commodity Section, (At Current Prices), Monthly</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/clipboard-1600194320.png" class="img-fluid figure-img"></p>
+<figcaption>优缺点：</figcaption>
+</figure>
+</div>
+<p>Improve version</p>
+<p>First we have to clean dataset follow the code.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>df_commodity <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/M451001.csv"</span>, <span class="at">skip =</span> <span class="dv">10</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_commodity)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Category"</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>time_cols <span class="ot">&lt;-</span> <span class="fu">colnames</span>(df_commodity)[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>valid_time_cols <span class="ot">&lt;-</span> time_cols[<span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">parse_date_time</span>(time_cols, <span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"Y b"</span>, <span class="st">"b Y"</span>)))]</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>time_cols_cleaned <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">parse_date_time</span>(valid_time_cols, <span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"Y b"</span>, <span class="st">"b Y"</span>)), <span class="st">"%Y-%m"</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_commodity) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Category"</span>, time_cols_cleaned)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>columns_to_keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Category"</span>, time_cols_cleaned[<span class="fu">year</span>(<span class="fu">parse_date_time</span>(time_cols_cleaned, <span class="at">orders =</span> <span class="st">"ym"</span>)) <span class="sc">&gt;=</span> <span class="dv">2010</span> <span class="sc">&amp;</span> </span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>                                                    <span class="fu">year</span>(<span class="fu">parse_date_time</span>(time_cols_cleaned, <span class="at">orders =</span> <span class="st">"ym"</span>)) <span class="sc">&lt;=</span> <span class="dv">2025</span>])</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> df_commodity <span class="sc">%&gt;%</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(columns_to_keep))</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>df_import <span class="ot">&lt;-</span> df_filtered[<span class="dv">19</span><span class="sc">:</span><span class="dv">27</span>, ] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Type =</span> <span class="st">"Import"</span>)</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>df_export <span class="ot">&lt;-</span> df_filtered[<span class="dv">33</span><span class="sc">:</span><span class="dv">41</span>, ] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Type =</span> <span class="st">"Export"</span>)</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>df_cleaned <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_import, df_export)</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(Category, Type), <span class="at">names_to =</span> <span class="st">"Date"</span>, <span class="at">values_to =</span> <span class="st">"Trade_Value"</span>)</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(df_long))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  Category            Type   Date    Trade_Value
+  &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt;
+1 Food &amp; Live Animals Import 2025-01    1227051.
+2 Food &amp; Live Animals Import 2024-12    1264573.
+3 Food &amp; Live Animals Import 2024-11    1192495.
+4 Food &amp; Live Animals Import 2024-10    1219199.
+5 Food &amp; Live Animals Import 2024-09    1130865.
+6 Food &amp; Live Animals Import 2024-08    1238345.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_long, <span class="st">"data/cleaned_com.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
