@@ -277,6 +277,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">4.2 Import data</a></li>
   </ul></li>
   <li><a href="#evaluate-and-design-data-visualization" id="toc-evaluate-and-design-data-visualization" class="nav-link" data-scroll-target="#evaluate-and-design-data-visualization">5. Evaluate and design data visualization</a></li>
+  <li><a href="#evaluate-and-design-data-visualization-1" id="toc-evaluate-and-design-data-visualization-1" class="nav-link" data-scroll-target="#evaluate-and-design-data-visualization-1">6. Evaluate and design data visualization</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -317,9 +318,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setting-the-scene" class="level2">
 <h2 class="anchored" data-anchor-id="setting-the-scene"><strong>2. Setting the scene</strong></h2>
+<p>Download Data,</p>
 </section>
 <section id="our-task" class="level2">
 <h2 class="anchored" data-anchor-id="our-task">3. Our task</h2>
+<p>Critique Existing Visualizations</p>
+<p>Select three visualizations from the provided webpage.</p>
+<p>Analyze and comment on their pros and cons (strengths and weaknesses).</p>
+<p>Provide sketches of redesigned versions (make-over) to improve the visualizations.</p>
+<p>Create Improved Visualizations</p>
+<p>Use ggplot2 and other appropriate R packages.</p>
+<p>Implement the make-over versions of the three visualizations with improved design and clarity.</p>
+<p>Time-Series Analysis or Forecasting</p>
+<p>Analyze the data using time-series analysis or time-series forecasting techniques.</p>
+<p>Support the analysis with appropriate visualizations and relevant R packages.</p>
 </section>
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">4. Getting started</h2>
@@ -537,9 +549,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Large space occupation, unable to display more countries.</p>
 <p>Time trend not shown, limited to 2024</p>
 </section>
-<section id="sketches-of-the-make-over" class="level4">
-<h4 class="anchored" data-anchor-id="sketches-of-the-make-over">Sketches of the make-over</h4>
-</section>
 <section id="improved-version-total-trade-volume-by-regionmarket" class="level4">
 <h4 class="anchored" data-anchor-id="improved-version-total-trade-volume-by-regionmarket">Improved version: Total trade volume by region/market</h4>
 <p>first, merge export from the two file</p>
@@ -685,10 +694,24 @@ date (1): Date
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/clipboard-1600194320.png" class="img-fluid figure-img"></p>
-<figcaption>优缺点：</figcaption>
+<figcaption>Strength and weakness:</figcaption>
 </figure>
 </div>
-<p>Improve version</p>
+<p>Strengths:</p>
+<ol type="1">
+<li>Clear Category Breakdown – The chart categorizes key commodities and highlights export (orange) and import (blue) values separately for easy comparison.</li>
+<li>Helpful Numerical Labels – Each category displays exact trade values and percentages, improving readability.</li>
+<li>Simple and Effective Design – The color contrast and “Top 3 Commodity Sections” summary make it visually appealing and easy to interpret.</li>
+</ol>
+<p>Weakness:</p>
+<ol type="1">
+<li>Export vs.&nbsp;Import Comparison is Misleading – Different scales make the gaps between exports and imports look bigger than they actually are.</li>
+<li>No Overall Export vs.&nbsp;Import Ratio – The chart lacks a clear visualization of total exports vs.&nbsp;imports, making it harder to see the overall balance.</li>
+<li>No Trend Analysis – It only shows 2024 data, missing past trends that could help understand market changes over time.</li>
+</ol>
+</section>
+<section id="improve-version" class="level4">
+<h4 class="anchored" data-anchor-id="improve-version">Improve version</h4>
 <p>First we have to clean dataset follow the code.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -735,9 +758,126 @@ date (1): Date
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df_long, <span class="st">"data/cleaned_com.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
+<p>By usig the file - cleaned-com.csv, we will create an interactive chart in shinyapp that allows viewers to select a year and see <strong>Top 10 Trading Partners</strong> and <strong>Non-Oil Merchandise Trade</strong>. We can compare every commodity export and import summary and the trend over years.</p>
+<ul>
+<li><p><a href="https://wangxingyun.shinyapps.io/take_home_Ex02/">Shinyapp - Click here to view the interactive Shiny app</a></p></li>
+<li><p><a href="http://wangxingyun.shinyapps.io/take_home_Ex02" class="uri">http://wangxingyun.shinyapps.io/take_home_Ex02</a></p></li>
+</ul>
 </section>
+<section id="third-data-visualization" class="level4">
+<h4 class="anchored" data-anchor-id="third-data-visualization"><strong>5.3 Third Data Visualization</strong></h4>
+<p><img src="images/clipboard-379462836.png" class="img-fluid"></p>
+<p>Strengths:</p>
+<p>Clearly displays the annual import and export values.</p>
+<p>Different colors for each year make the visualization clear and easy to understand.</p>
+<p>Weaknesses:</p>
+<p>The 6.6% increase does not specify which year it is being compared to.</p>
+<p>The chart lacks a trend showing the changes over previous years.</p>
+<p>Improvements:</p>
+<p>Create three separate tables:</p>
+<p>Import Table: Displays annual import values and indicates whether they increased or decreased compared to the previous year, along with the percentage change.</p>
+<p>Export Table: Shows annual export values and their trend.</p>
+<p>Total Trade Table: Displays the sum of imports and exports for each year, including the percentage change compared to the previous year.</p>
+</section>
+<section id="improved-version" class="level4">
+<h4 class="anchored" data-anchor-id="improved-version">Improved version</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cleaned_Im.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/merged_export.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>df_Im <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>df_merged_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date))</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>df_import <span class="ot">&lt;-</span> df_Im <span class="sc">%&gt;%</span> </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Total All Markets"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Date, <span class="at">Import =</span> Trade_Value) <span class="sc">%&gt;%</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Import =</span> <span class="fu">round</span>(Import <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">2</span>))  </span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>df_export <span class="ot">&lt;-</span> df_merged_export <span class="sc">%&gt;%</span></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Total All Markets"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Date, <span class="at">Export =</span> Export_Trade_Value) <span class="sc">%&gt;%</span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Export =</span> <span class="fu">round</span>(Export <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">2</span>))  </span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>df_total_trade <span class="ot">&lt;-</span> <span class="fu">full_join</span>(df_import, df_export, <span class="at">by =</span> <span class="st">"Date"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_Trade =</span> Import <span class="sc">+</span> Export) <span class="sc">%&gt;%</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">year</span>(Date)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">&gt;=</span> <span class="dv">2020</span> <span class="sc">&amp;</span> Year <span class="sc">&lt;=</span> <span class="dv">2024</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Import =</span> <span class="fu">sum</span>(Import, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">Export =</span> <span class="fu">sum</span>(Export, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">Total_Trade =</span> <span class="fu">sum</span>(Total_Trade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Import_Change =</span> <span class="fu">round</span>((Import <span class="sc">-</span> <span class="fu">lag</span>(Import)) <span class="sc">/</span> <span class="fu">lag</span>(Import) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">Export_Change =</span> <span class="fu">round</span>((Export <span class="sc">-</span> <span class="fu">lag</span>(Export)) <span class="sc">/</span> <span class="fu">lag</span>(Export) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">Total_Change =</span> <span class="fu">round</span>((Total_Trade <span class="sc">-</span> <span class="fu">lag</span>(Total_Trade)) <span class="sc">/</span> <span class="fu">lag</span>(Total_Trade) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>))</span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a>custom_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Import"</span> <span class="ot">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"Export"</span> <span class="ot">=</span> <span class="st">"#ff7f0e"</span>, <span class="st">"Total Trade"</span> <span class="ot">=</span> <span class="st">"#2ca02c"</span>)</span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Import)) <span class="sc">+</span></span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Import"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Import)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Import <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Import_Change), <span class="fu">paste0</span>(Import_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Yearly Import Trend (2020-2024)"</span>, <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Import Value (S$ Billion)"</span>) <span class="sc">+</span></span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Export)) <span class="sc">+</span></span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Export"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Export)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Export <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Export_Change), <span class="fu">paste0</span>(Export_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Yearly Export Trend (2020-2024)"</span>, <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Export Value (S$ Billion)"</span>) <span class="sc">+</span></span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Total_Trade)) <span class="sc">+</span></span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Total Trade"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Total_Trade)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Total_Trade <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Total_Change), <span class="fu">paste0</span>(Total_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Trade (Import + Export) Trend (2020-2024)"</span>, </span>
+<span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Total Trade Value (S$ Billion)"</span>) <span class="sc">+</span></span>
+<span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb34-65"><a href="#cb34-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-66"><a href="#cb34-66" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p1)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p2)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p3)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="evaluate-and-design-data-visualization-1" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate-and-design-data-visualization-1">6. Evaluate and design data visualization</h2>
+
+
 </section>
 </section>
 

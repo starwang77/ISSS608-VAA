@@ -11,7 +11,29 @@ We try to apply newly acquired techniques to explore and analyze the changing tr
 
 ## **2. Setting the scene**
 
+Download Data,
+
 ## 3. Our task
+
+Critique Existing Visualizations
+
+Select three visualizations from the provided webpage.
+
+Analyze and comment on their pros and cons (strengths and weaknesses).
+
+Provide sketches of redesigned versions (make-over) to improve the visualizations.
+
+Create Improved Visualizations
+
+Use ggplot2 and other appropriate R packages.
+
+Implement the make-over versions of the three visualizations with improved design and clarity.
+
+Time-Series Analysis or Forecasting
+
+Analyze the data using time-series analysis or time-series forecasting techniques.
+
+Support the analysis with appropriate visualizations and relevant R packages.
 
 ## 4. Getting started
 
@@ -122,8 +144,6 @@ Large space occupation, unable to display more countries.
 
 Time trend not shown, limited to 2024
 
-#### Sketches of the make-over
-
 #### Improved version: Total trade volume by region/market
 
 first, merge export from the two file
@@ -217,13 +237,25 @@ We will create an interactive chart in shinyapp that allows viewers to select a 
 
 [Shinyapp - Click here to view the interactive Shiny app](https://wangxingyun.shinyapps.io/take_home_Ex02/)
 
-#### **5.2 Second Data Visualization** 
+#### **5.2 Second Data Visualization**
 
 We need to download the file (M451001)-Merchandise Trade By Commodity Section, (At Current Prices), Monthly
 
-![优缺点：](images/clipboard-1600194320.png)
+![Strength and weakness:](images/clipboard-1600194320.png)
 
-Improve version
+Strengths:
+
+1.  Clear Category Breakdown – The chart categorizes key commodities and highlights export (orange) and import (blue) values separately for easy comparison.
+2.  Helpful Numerical Labels – Each category displays exact trade values and percentages, improving readability.
+3.  Simple and Effective Design – The color contrast and "Top 3 Commodity Sections" summary make it visually appealing and easy to interpret.
+
+Weakness:
+
+1.  Export vs. Import Comparison is Misleading – Different scales make the gaps between exports and imports look bigger than they actually are.
+2.  No Overall Export vs. Import Ratio – The chart lacks a clear visualization of total exports vs. imports, making it harder to see the overall balance.
+3.  No Trend Analysis – It only shows 2024 data, missing past trends that could help understand market changes over time.
+
+#### Improve version
 
 First we have to clean dataset follow the code.
 
@@ -261,3 +293,112 @@ df_long <- df_cleaned %>%
 print(head(df_long))
 write_csv(df_long, "data/cleaned_com.csv")
 ```
+
+By usig the file - cleaned-com.csv, we will create an interactive chart in shinyapp that allows viewers to select a year and see **Top 10 Trading Partners** and **Non-Oil Merchandise Trade**. We can compare every commodity export and import summary and the trend over years.
+
+-   [Shinyapp - Click here to view the interactive Shiny app](https://wangxingyun.shinyapps.io/take_home_Ex02/)
+
+-   <http://wangxingyun.shinyapps.io/take_home_Ex02>
+
+#### **5.3 Third Data Visualization**
+
+![](images/clipboard-379462836.png)
+
+Strengths:
+
+Clearly displays the annual import and export values.
+
+Different colors for each year make the visualization clear and easy to understand.
+
+Weaknesses:
+
+The 6.6% increase does not specify which year it is being compared to.
+
+The chart lacks a trend showing the changes over previous years.
+
+Improvements:
+
+Create three separate tables:
+
+Import Table: Displays annual import values and indicates whether they increased or decreased compared to the previous year, along with the percentage change.
+
+Export Table: Shows annual export values and their trend.
+
+Total Trade Table: Displays the sum of imports and exports for each year, including the percentage change compared to the previous year.
+
+#### Improved version
+
+```{r}
+
+library(tidyverse)
+library(lubridate)
+
+
+df_Im <- read_csv("data/cleaned_Im.csv", show_col_types = FALSE)
+df_merged_export <- read_csv("data/merged_export.csv", show_col_types = FALSE)
+
+
+df_Im <- df_Im %>% mutate(Date = as.Date(Date))
+df_merged_export <- df_merged_export %>% mutate(Date = as.Date(Date))
+
+
+df_import <- df_Im %>% 
+  filter(Country == "Total All Markets") %>%
+  select(Date, Import = Trade_Value) %>%
+  mutate(Import = round(Import / 1000, 2))  
+
+df_export <- df_merged_export %>%
+  filter(Country == "Total All Markets") %>%
+  select(Date, Export = Export_Trade_Value) %>%
+  mutate(Export = round(Export / 1000, 2))  
+
+df_total_trade <- full_join(df_import, df_export, by = "Date") %>%
+  mutate(Total_Trade = Import + Export) %>%
+  mutate(Year = year(Date)) %>%
+  filter(Year >= 2020 & Year <= 2024) %>%
+  group_by(Year) %>%
+  summarise(Import = sum(Import, na.rm = TRUE),
+            Export = sum(Export, na.rm = TRUE),
+            Total_Trade = sum(Total_Trade, na.rm = TRUE)) %>%
+  arrange(Year) %>%
+  mutate(Import_Change = round((Import - lag(Import)) / lag(Import) * 100, 1),
+         Export_Change = round((Export - lag(Export)) / lag(Export) * 100, 1),
+         Total_Change = round((Total_Trade - lag(Total_Trade)) / lag(Total_Trade) * 100, 1))
+
+
+custom_colors <- c("Import" = "#1f77b4", "Export" = "#ff7f0e", "Total Trade" = "#2ca02c")
+
+
+p1 <- ggplot(df_total_trade, aes(x = factor(Year), y = Import)) +
+  geom_bar(stat = "identity", fill = custom_colors["Import"], alpha = 0.7) +
+  geom_text(aes(label = sprintf("S$ %.2f B", Import)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(y = Import * 0.98, label = ifelse(!is.na(Import_Change), paste0(Import_Change, "%"), "")), 
+            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+  labs(title = "Yearly Import Trend (2020-2024)", x = "Year", y = "Import Value (S$ Billion)") +
+  theme_minimal()
+
+
+p2 <- ggplot(df_total_trade, aes(x = factor(Year), y = Export)) +
+  geom_bar(stat = "identity", fill = custom_colors["Export"], alpha = 0.7) +
+  geom_text(aes(label = sprintf("S$ %.2f B", Export)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(y = Export * 0.98, label = ifelse(!is.na(Export_Change), paste0(Export_Change, "%"), "")), 
+            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+  labs(title = "Yearly Export Trend (2020-2024)", x = "Year", y = "Export Value (S$ Billion)") +
+  theme_minimal()
+
+p3 <- ggplot(df_total_trade, aes(x = factor(Year), y = Total_Trade)) +
+  geom_bar(stat = "identity", fill = custom_colors["Total Trade"], alpha = 0.7) +
+  geom_text(aes(label = sprintf("S$ %.2f B", Total_Trade)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(y = Total_Trade * 0.98, label = ifelse(!is.na(Total_Change), paste0(Total_Change, "%"), "")), 
+            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+  labs(title = "Total Trade (Import + Export) Trend (2020-2024)", 
+       x = "Year", y = "Total Trade Value (S$ Billion)") +
+  theme_minimal()
+
+print(p1)  
+print(p2)  
+print(p3)  
+
+```
+
+## 6. Evaluate and design data visualization
