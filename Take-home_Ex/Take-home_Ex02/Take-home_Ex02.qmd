@@ -11,7 +11,15 @@ We try to apply newly acquired techniques to explore and analyze the changing tr
 
 ## **2. Setting the scene**
 
-Download Data,
+Singapore is a major global trade hub, and its trade patterns reflect economic trends, policy changes, and global events. Since 2015, factors like the U.S.-China trade war, COVID-19, and economic recovery have influenced trade fluctuations.This analysis aims to explore Singapore’s international trade trends using data visualization and time-series analysis.
+
+a\. Critique Existing Visualizations – Identify strengths and weaknesses of current trade charts.
+
+b\. Create Improved Visualizations – Use ggplot2 and R packages to enhance clarity. Perform
+
+c\. Time-Series Analysis and Forecasting – Analyze trade trends and predict future movements.
+
+By combining visual and analytical approaches, we aim to uncover insights into Singapore’s trade patterns and anticipate future trends.
 
 ## 3. Our task
 
@@ -371,26 +379,26 @@ custom_colors <- c("Import" = "#1f77b4", "Export" = "#ff7f0e", "Total Trade" = "
 
 p1 <- ggplot(df_total_trade, aes(x = factor(Year), y = Import)) +
   geom_bar(stat = "identity", fill = custom_colors["Import"], alpha = 0.7) +
-  geom_text(aes(label = sprintf("S$ %.2f B", Import)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(label = sprintf("S$ %.2f B", Import)), vjust = -0.5, size = 3, fontface = "bold") +  
   geom_text(aes(y = Import * 0.98, label = ifelse(!is.na(Import_Change), paste0(Import_Change, "%"), "")), 
-            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+            vjust = 1.5, size = 3, color = "red", fontface = "bold") +
   labs(title = "Yearly Import Trend (2020-2024)", x = "Year", y = "Import Value (S$ Billion)") +
   theme_minimal()
 
 
 p2 <- ggplot(df_total_trade, aes(x = factor(Year), y = Export)) +
   geom_bar(stat = "identity", fill = custom_colors["Export"], alpha = 0.7) +
-  geom_text(aes(label = sprintf("S$ %.2f B", Export)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(label = sprintf("S$ %.2f B", Export)), vjust = -0.5, size = 3, fontface = "bold") +  
   geom_text(aes(y = Export * 0.98, label = ifelse(!is.na(Export_Change), paste0(Export_Change, "%"), "")), 
-            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+            vjust = 1.5, size = 3, color = "red", fontface = "bold") +
   labs(title = "Yearly Export Trend (2020-2024)", x = "Year", y = "Export Value (S$ Billion)") +
   theme_minimal()
 
 p3 <- ggplot(df_total_trade, aes(x = factor(Year), y = Total_Trade)) +
   geom_bar(stat = "identity", fill = custom_colors["Total Trade"], alpha = 0.7) +
-  geom_text(aes(label = sprintf("S$ %.2f B", Total_Trade)), vjust = -0.5, size = 5, fontface = "bold") +  
+  geom_text(aes(label = sprintf("S$ %.2f B", Total_Trade)), vjust = -0.5, size = 3, fontface = "bold") +  
   geom_text(aes(y = Total_Trade * 0.98, label = ifelse(!is.na(Total_Change), paste0(Total_Change, "%"), "")), 
-            vjust = 1.5, size = 4, color = "red", fontface = "bold") +
+            vjust = 1.5, size = 3, color = "red", fontface = "bold") +
   labs(title = "Total Trade (Import + Export) Trend (2020-2024)", 
        x = "Year", y = "Total Trade Value (S$ Billion)") +
   theme_minimal()
@@ -403,7 +411,7 @@ print(p3)
 
 ## 6. Time series analysis
 
-We can deal with data set again first, we can observe data over 10 years.
+We can first work with the dataset again and observe the data over the past 10 years.
 
 Clean up the data and ensure its format is correct, especially the time column must be of Date type and aggregated by year/month.
 
@@ -436,6 +444,8 @@ df_total_trade <- full_join(df_import, df_export, by = c("Date", "Year", "Month"
 
 #### Draw Cycle Plot
 
+Suitable for analyzing seasonal patterns in time series data, helping to identify variations across different months. Merchandise trade data is often influenced by seasonal factors such as holidays and policy changes. The Cycle Plot allows us to observe monthly trade patterns across different years, helping to detect recurring trends.
+
 ```{r}
 library(ggplot2)
 
@@ -449,6 +459,20 @@ ggplot(df_total_trade, aes(x = Month, y = Total_Trade, group = Year, color = fac
 
 ```
 
+Observation:
+
+1.  The trade value has shown a general upward trend over the years, with 2022 and 2023 having notably high trade values compared to previous years.
+2.  2020-2024 trade values are significantly higher than 2010-2019, indicating economic expansion.
+3.  Trade values tend to drop in the first quarter (January - March), likely due to the Chinese New Year and seasonal slowdowns.
+4.  There is a consistent increase mid-year (May - July) and another peak towards the year-end (October - December), possibly due to global supply chain demands, year-end trade, and holiday-related exports/imports.
+5.  2022 and 2023 exhibit higher volatility in trade values compared to earlier years. This suggests that post-pandemic recovery and trade policy adjustments played a role in boosting trade volumes.
+6.  The dip in early 2020 aligns with COVID-19-related trade disruptions, but subsequent years have shown strong rebounds.
+7.  2022 and 2023 saw exceptionally high trade values in certain months, especially around mid-year and year-end.
+
+#### Draw Slope Graph
+
+Slope Graph is useful for comparing two points in time to show increases or decreases in values clearly. The Slope Graph effectively visualizes total trade volume changes between 2010 and 2024, providing a direct view of long-term growth.
+
 ```{r}
 
 df_slope <- df_total_trade %>%
@@ -460,17 +484,44 @@ df_slope <- df_total_trade %>%
 ggplot(df_slope, aes(x = factor(Year), y = Total_Trade, group = 1)) +
   geom_line(aes(color = "Total Trade"), size = 1) +  
   geom_point(size = 3, color = "red") +  
-  geom_text(aes(label = round(Total_Trade, 2)), vjust = -0.5, size = 4, fontface = "bold") +  
+  geom_text(aes(label = round(Total_Trade / 1000, 2)), vjust = -0.5, size = 2.5, fontface = "bold") +  
   labs(title = "Total Trade Change from 2010 to 2024",
        x = "Year", y = "Trade Value (S$ Billion)",
        color = "Trade Type") +
   theme_minimal() +
   theme(legend.position = "none")  
+```
 
+11
+
+```{r}
+
+df_slope <- df_total_trade %>%
+  group_by(Year) %>%
+  summarise(Total_Trade = sum(Total_Trade, na.rm = TRUE))  
+
+
+ggplot(df_slope, aes(x = factor(Year), y = Total_Trade, group = 1)) +
+  geom_line(color = "red", size = 1) +  
+  geom_point(size = 3, color = "red") +  
+  geom_text(aes(label = round(Total_Trade / 1000, 2)), vjust = -0.5, size = 3, fontface = "bold") +  
+  labs(title = "Total Trade Change from 2010 to 2024",
+       x = "Year", y = "Trade Value (S$ Billion)") +
+  theme_minimal()
 
 ```
 
-Heatmap
+Observation:
+
+1.  The total trade value has shown a significant increase from 907.04 billion S\$ in 2010 to 1,285.86 billion S\$ in 2024. This indicates a strong upward trend in trade over the years.
+2.  The total trade value was relatively stable between 2010 and 2014, staying around 1,000 billion S\$. A notable decline occurred between 2014 and 2016, reaching the lowest point in 2016 (870.22 billion S\$). From 2017 onwards, trade value exhibited a sharp recovery, particularly in 2021 and 2022, where trade peaked at 1,365.4 billion S\$.
+3.  The spike in 2021 and 2022 aligns with the post-pandemic recovery, where global supply chains and trade rebounded.
+4.  The slight dip in 2023 (1,205.72 billion S\$) suggests potential economic uncertainties or adjustments after the strong post-pandemic growth.
+5.  While the overall trend is upward, the trade values exhibit periodic declines and rebounds.
+
+#### Draw Heatmap
+
+Heatmap is suitable for displaying data distribution across different time periods, helping to identify trends, anomalies, and seasonal patterns. For my task, the Year-Month Heatmap enables a clear visualization of trade volume variations, revealing peak and low seasons over the years.
 
 ```{r}
 
@@ -485,7 +536,16 @@ ggplot(df_total_trade, aes(x = Month, y = factor(Year), fill = Total_Trade)) +
 
 ```
 
-Forecast model
+Observation:
+
+1.  The heatmap clearly shows an increase in trade value over time. The earlier years (2010-2016) are predominantly yellow and orange, indicating lower trade values. In the later years (2020-2024), the colors shift to red and purple, representing higher trade values, confirming a long-term increasing trend.
+2.  The trade value fluctuates across different months. Certain months, such as early months of 2020 and 2016, exhibit higher trade activity, as indicated by brighter yellow colors. Conversely, 2022 and 2024 show lower trade activity during certain months (dark blue colors), potentially due to economic disruptions or market slowdowns.
+3.  A sharp increase is observed in 2021, which aligns with post-pandemic global economic recovery. In 2022, certain months show deep purple (high trade activity), while others dip, indicating potential global supply chain adjustments. The global economic downturn or policy shifts might have influenced fluctuations in trade in the later years.
+4.  Some years display more balanced trade across months, while others have strong peaks and troughs. Trade tends to rise towards mid-year in several years, suggesting cyclical economic patterns. The year-end months (November-December) are generally stable, likely due to established supply chain and trade cycles.
+
+#### Forecast model
+
+Time Series Forecasting is suitable for predicting future trends based on historical data, aiding decision-making processes. For my task: Using ARIMA to forecast trade data for 2025, we can estimate future trends and potential fluctuations in trade volume.
 
 ```{r}
 
@@ -515,3 +575,17 @@ autoplot(forecast_result) +
 ```
 
 Observation:
+
+1.  The forecast predicts a gradual increase in total trade from January 2025 to May 2025, peaking around April-May. However, there is a slight decline towards June 2025, indicating potential seasonal trade adjustments.
+2.  Confidence Intervals: The darker blue region (80% confidence interval) represents a more probable forecast range. The lighter blue region (95% confidence interval) indicates wider uncertainty in predictions, showing possible fluctuations. The confidence intervals widen towards the future, which is expected as uncertainty increases over time.
+
+#### Conclusion:
+
+1.  Cycle Plot: Reveals monthly trade patterns and seasonal fluctuations, clearly identifying peak and low trade seasons over the years. This helps in understanding recurring trends and planning for seasonal demand variations.
+2.  Slope Graph:Illustrates the significant increase in trade volume from 2010 to 2024, highlighting the long-term upward trend in total trade. It effectively emphasizes the steady expansion of trade activity over the past decade.
+3.  Heatmap: Provides a detailed view of trade distribution across years and months, making it easier to spot anomalies, cyclical trends, and long-term growth patterns. This visualization helps in identifying seasonal trade fluctuations and market shifts.
+4.  Time Series Forecasting: Projects trade volume trends for 2025, indicating potential growth with some uncertainty. The confidence intervals highlight the expected range of trade values, offering insights into possible market fluctuations and risks.
+
+#### Reference
+
+[Visualising and Analysing Time-series Data](https://r4va.netlify.app/chap17)

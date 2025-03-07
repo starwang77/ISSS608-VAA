@@ -318,7 +318,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setting-the-scene" class="level2">
 <h2 class="anchored" data-anchor-id="setting-the-scene"><strong>2. Setting the scene</strong></h2>
-<p>Download Data,</p>
+<p>Singapore is a major global trade hub, and its trade patterns reflect economic trends, policy changes, and global events. Since 2015, factors like the U.S.-China trade war, COVID-19, and economic recovery have influenced trade fluctuations.This analysis aims to explore Singapore’s international trade trends using data visualization and time-series analysis.</p>
+<p>a. Critique Existing Visualizations – Identify strengths and weaknesses of current trade charts.</p>
+<p>b. Create Improved Visualizations – Use ggplot2 and R packages to enhance clarity. Perform</p>
+<p>c. Time-Series Analysis and Forecasting – Analyze trade trends and predict future movements.</p>
+<p>By combining visual and analytical approaches, we aim to uncover insights into Singapore’s trade patterns and anticipate future trends.</p>
 </section>
 <section id="our-task" class="level2">
 <h2 class="anchored" data-anchor-id="our-task">3. Our task</h2>
@@ -823,26 +827,26 @@ date (1): Date
 <span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Import)) <span class="sc">+</span></span>
 <span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Import"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Import)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Import)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
 <span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Import <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Import_Change), <span class="fu">paste0</span>(Import_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
-<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
 <span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Yearly Import Trend (2020-2024)"</span>, <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Import Value (S$ Billion)"</span>) <span class="sc">+</span></span>
 <span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
 <span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Export)) <span class="sc">+</span></span>
 <span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Export"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Export)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Export)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
 <span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Export <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Export_Change), <span class="fu">paste0</span>(Export_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
-<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
 <span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Yearly Export Trend (2020-2024)"</span>, <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Export Value (S$ Billion)"</span>) <span class="sc">+</span></span>
 <span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
 <span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Total_Trade)) <span class="sc">+</span></span>
 <span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> custom_colors[<span class="st">"Total Trade"</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Total_Trade)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"S$ %.2f B"</span>, Total_Trade)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
 <span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> Total_Trade <span class="sc">*</span> <span class="fl">0.98</span>, <span class="at">label =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(Total_Change), <span class="fu">paste0</span>(Total_Change, <span class="st">"%"</span>), <span class="st">""</span>)), </span>
-<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
 <span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Trade (Import + Export) Trend (2020-2024)"</span>, </span>
 <span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Total Trade Value (S$ Billion)"</span>) <span class="sc">+</span></span>
 <span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
@@ -876,7 +880,7 @@ date (1): Date
 </section>
 <section id="time-series-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="time-series-analysis">6. Time series analysis</h2>
-<p>We can deal with data set again first, we can observe data over 10 years.</p>
+<p>We can first work with the dataset again and observe the data over the past 10 years.</p>
 <p>Clean up the data and ensure its format is correct, especially the time column must be of Date type and aggregated by year/month.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -904,6 +908,7 @@ date (1): Date
 </div>
 <section id="draw-cycle-plot" class="level4">
 <h4 class="anchored" data-anchor-id="draw-cycle-plot">Draw Cycle Plot</h4>
+<p>Suitable for analyzing seasonal patterns in time series data, helping to identify variations across different months. Merchandise trade data is often influenced by seasonal factors such as holidays and policy changes. The Cycle Plot allows us to observe monthly trade patterns across different years, helping to detect recurring trends.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -926,6 +931,20 @@ date (1): Date
 </div>
 </div>
 </div>
+<p>Observation:</p>
+<ol type="1">
+<li>The trade value has shown a general upward trend over the years, with 2022 and 2023 having notably high trade values compared to previous years.</li>
+<li>2020-2024 trade values are significantly higher than 2010-2019, indicating economic expansion.</li>
+<li>Trade values tend to drop in the first quarter (January - March), likely due to the Chinese New Year and seasonal slowdowns.</li>
+<li>There is a consistent increase mid-year (May - July) and another peak towards the year-end (October - December), possibly due to global supply chain demands, year-end trade, and holiday-related exports/imports.</li>
+<li>2022 and 2023 exhibit higher volatility in trade values compared to earlier years. This suggests that post-pandemic recovery and trade policy adjustments played a role in boosting trade volumes.</li>
+<li>The dip in early 2020 aligns with COVID-19-related trade disruptions, but subsequent years have shown strong rebounds.</li>
+<li>2022 and 2023 saw exceptionally high trade values in certain months, especially around mid-year and year-end.</li>
+</ol>
+</section>
+<section id="draw-slope-graph" class="level4">
+<h4 class="anchored" data-anchor-id="draw-slope-graph">Draw Slope Graph</h4>
+<p>Slope Graph is useful for comparing two points in time to show increases or decreases in values clearly. The Slope Graph effectively visualizes total trade volume changes between 2010 and 2024, providing a direct view of long-term growth.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df_slope <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">2024</span>)) <span class="sc">%&gt;%</span></span>
@@ -936,7 +955,7 @@ date (1): Date
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_slope, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Total_Trade, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Total Trade"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
 <span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span>  </span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Total_Trade, <span class="dv">2</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Total_Trade <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">2</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
 <span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Trade Change from 2010 to 2024"</span>,</span>
 <span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Trade Value (S$ Billion)"</span>,</span>
 <span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Trade Type"</span>) <span class="sc">+</span></span>
@@ -950,15 +969,20 @@ date (1): Date
 </div>
 </div>
 </div>
-<p>Heatmap</p>
+<p>11</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> <span class="fu">factor</span>(Year), <span class="at">fill =</span> Total_Trade)) <span class="sc">+</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"C"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span>  </span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trade Value Heatmap (2010-2024)"</span>,</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"Year"</span>,</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Trade Value (S$ Billion)"</span>) <span class="sc">+</span></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>df_slope <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Total_Trade =</span> <span class="fu">sum</span>(Total_Trade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))  </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_slope, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Year), <span class="at">y =</span> Total_Trade, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span>  </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(Total_Trade <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">2</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Trade Change from 2010 to 2024"</span>,</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Trade Value (S$ Billion)"</span>) <span class="sc">+</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -967,11 +991,49 @@ date (1): Date
 </div>
 </div>
 </div>
-<p>Forecast model</p>
+<p>Observation:</p>
+<ol type="1">
+<li>The total trade value has shown a significant increase from 907.04 billion S$ in 2010 to 1,285.86 billion S$ in 2024. This indicates a strong upward trend in trade over the years.</li>
+<li>The total trade value was relatively stable between 2010 and 2014, staying around 1,000 billion S$. A notable decline occurred between 2014 and 2016, reaching the lowest point in 2016 (870.22 billion S$). From 2017 onwards, trade value exhibited a sharp recovery, particularly in 2021 and 2022, where trade peaked at 1,365.4 billion S$.</li>
+<li>The spike in 2021 and 2022 aligns with the post-pandemic recovery, where global supply chains and trade rebounded.</li>
+<li>The slight dip in 2023 (1,205.72 billion S$) suggests potential economic uncertainties or adjustments after the strong post-pandemic growth.</li>
+<li>While the overall trend is upward, the trade values exhibit periodic declines and rebounds.</li>
+</ol>
+</section>
+<section id="draw-heatmap" class="level4">
+<h4 class="anchored" data-anchor-id="draw-heatmap">Draw Heatmap</h4>
+<p>Heatmap is suitable for displaying data distribution across different time periods, helping to identify trends, anomalies, and seasonal patterns. For my task, the Year-Month Heatmap enables a clear visualization of trade volume variations, revealing peak and low seasons over the years.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_total_trade, <span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> <span class="fu">factor</span>(Year), <span class="at">fill =</span> Total_Trade)) <span class="sc">+</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"C"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trade Value Heatmap (2010-2024)"</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"Year"</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Trade Value (S$ Billion)"</span>) <span class="sc">+</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Observation:</p>
+<ol type="1">
+<li>The heatmap clearly shows an increase in trade value over time. The earlier years (2010-2016) are predominantly yellow and orange, indicating lower trade values. In the later years (2020-2024), the colors shift to red and purple, representing higher trade values, confirming a long-term increasing trend.</li>
+<li>The trade value fluctuates across different months. Certain months, such as early months of 2020 and 2016, exhibit higher trade activity, as indicated by brighter yellow colors. Conversely, 2022 and 2024 show lower trade activity during certain months (dark blue colors), potentially due to economic disruptions or market slowdowns.</li>
+<li>A sharp increase is observed in 2021, which aligns with post-pandemic global economic recovery. In 2022, certain months show deep purple (high trade activity), while others dip, indicating potential global supply chain adjustments. The global economic downturn or policy shifts might have influenced fluctuations in trade in the later years.</li>
+<li>Some years display more balanced trade across months, while others have strong peaks and troughs. Trade tends to rise towards mid-year in several years, suggesting cyclical economic patterns. The year-end months (November-December) are generally stable, likely due to established supply chain and trade cycles.</li>
+</ol>
+</section>
+<section id="forecast-model" class="level4">
+<h4 class="anchored" data-anchor-id="forecast-model">Forecast model</h4>
+<p>Time Series Forecasting is suitable for predicting future trends based on historical data, aiding decision-making processes. For my task: Using ARIMA to forecast trade data for 2025, we can estimate future trends and potential fluctuations in trade volume.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Registered S3 methods overwritten by 'tsibble':
   method               from 
@@ -997,36 +1059,53 @@ Attaching package: 'tsibble'</code></pre>
 
     intersect, setdiff, union</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: fabletools</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>df_total_trade <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">yearmonth</span>(Date)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> Date) <span class="sc">%&gt;%</span>  </span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill_gaps</span>() <span class="sc">%&gt;%</span>  </span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_Trade =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Total_Trade), <span class="fu">mean</span>(Total_Trade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), Total_Trade))  </span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>forecast_model <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Total_Trade))</span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>forecast_result <span class="ot">&lt;-</span> forecast_model <span class="sc">%&gt;%</span></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"6 months"</span>)</span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(forecast_result) <span class="sc">+</span></span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Forecast for Total Trade"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>df_total_trade <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">yearmonth</span>(Date)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> Date) <span class="sc">%&gt;%</span>  </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill_gaps</span>() <span class="sc">%&gt;%</span>  </span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_Trade =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Total_Trade), <span class="fu">mean</span>(Total_Trade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), Total_Trade))  </span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>forecast_model <span class="ot">&lt;-</span> df_total_trade <span class="sc">%&gt;%</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Total_Trade))</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>forecast_result <span class="ot">&lt;-</span> forecast_model <span class="sc">%&gt;%</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"6 months"</span>)</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(forecast_result) <span class="sc">+</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Forecast for Total Trade"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Observation:</p>
+<ol type="1">
+<li>The forecast predicts a gradual increase in total trade from January 2025 to May 2025, peaking around April-May. However, there is a slight decline towards June 2025, indicating potential seasonal trade adjustments.</li>
+<li>Confidence Intervals: The darker blue region (80% confidence interval) represents a more probable forecast range. The lighter blue region (95% confidence interval) indicates wider uncertainty in predictions, showing possible fluctuations. The confidence intervals widen towards the future, which is expected as uncertainty increases over time.</li>
+</ol>
+</section>
+<section id="conclusion" class="level4">
+<h4 class="anchored" data-anchor-id="conclusion">Conclusion:</h4>
+<ol type="1">
+<li>Cycle Plot: Reveals monthly trade patterns and seasonal fluctuations, clearly identifying peak and low trade seasons over the years. This helps in understanding recurring trends and planning for seasonal demand variations.</li>
+<li>Slope Graph:Illustrates the significant increase in trade volume from 2010 to 2024, highlighting the long-term upward trend in total trade. It effectively emphasizes the steady expansion of trade activity over the past decade.</li>
+<li>Heatmap: Provides a detailed view of trade distribution across years and months, making it easier to spot anomalies, cyclical trends, and long-term growth patterns. This visualization helps in identifying seasonal trade fluctuations and market shifts.</li>
+<li>Time Series Forecasting: Projects trade volume trends for 2025, indicating potential growth with some uncertainty. The confidence intervals highlight the expected range of trade values, offering insights into possible market fluctuations and risks.</li>
+</ol>
+</section>
+<section id="reference" class="level4">
+<h4 class="anchored" data-anchor-id="reference">Reference</h4>
+<p><a href="https://r4va.netlify.app/chap17">Visualising and Analysing Time-series Data</a></p>
 
 
 </section>
