@@ -401,4 +401,117 @@ print(p3)
 
 ```
 
-## 6. Evaluate and design data visualization
+## 6. Time series analysis
+
+We can deal with data set again first, we can observe data over 10 years.
+
+Clean up the data and ensure its format is correct, especially the time column must be of Date type and aggregated by year/month.
+
+```{r}
+
+library(tidyverse)
+library(lubridate)
+
+
+df_Im <- read_csv("data/cleaned_Im.csv", show_col_types = FALSE)
+df_merged_export <- read_csv("data/merged_export.csv", show_col_types = FALSE)
+
+df_Im <- df_Im %>% mutate(Date = as.Date(Date), Year = year(Date), Month = month(Date))
+df_merged_export <- df_merged_export %>% mutate(Date = as.Date(Date), Year = year(Date), Month = month(Date))
+
+
+
+df_import <- df_Im %>% filter(Country == "Total All Markets") %>%
+  select(Date, Year, Month, Import = Trade_Value)
+
+df_export <- df_merged_export %>% filter(Country == "Total All Markets") %>%
+  select(Date, Year, Month, Export = Export_Trade_Value)
+
+
+df_total_trade <- full_join(df_import, df_export, by = c("Date", "Year", "Month")) %>%
+  mutate(Total_Trade = Import + Export) %>%
+  filter(Year >= 2010 & Year <= 2024)  
+
+```
+
+#### Draw Cycle Plot
+
+```{r}
+library(ggplot2)
+
+ggplot(df_total_trade, aes(x = Month, y = Total_Trade, group = Year, color = factor(Year))) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(title = "Cycle Plot of Total Trade (2010-2024)",
+       x = "Month", y = "Trade Value (S$ Billion)",
+       color = "Year") +
+  theme_minimal()
+
+```
+
+```{r}
+
+df_slope <- df_total_trade %>%
+  filter(Year %in% c(2010, 2024)) %>%
+  group_by(Year) %>%
+  summarise(Total_Trade = sum(Total_Trade, na.rm = TRUE))  
+
+
+ggplot(df_slope, aes(x = factor(Year), y = Total_Trade, group = 1)) +
+  geom_line(aes(color = "Total Trade"), size = 1) +  
+  geom_point(size = 3, color = "red") +  
+  geom_text(aes(label = round(Total_Trade, 2)), vjust = -0.5, size = 4, fontface = "bold") +  
+  labs(title = "Total Trade Change from 2010 to 2024",
+       x = "Year", y = "Trade Value (S$ Billion)",
+       color = "Trade Type") +
+  theme_minimal() +
+  theme(legend.position = "none")  
+
+
+```
+
+Heatmap
+
+```{r}
+
+
+ggplot(df_total_trade, aes(x = Month, y = factor(Year), fill = Total_Trade)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(option = "C", direction = -1) +  
+  labs(title = "Trade Value Heatmap (2010-2024)",
+       x = "Month", y = "Year",
+       fill = "Trade Value (S$ Billion)") +
+  theme_minimal()
+
+```
+
+Forecast model
+
+```{r}
+
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+library(fable)
+
+
+df_total_trade <- df_total_trade %>%
+  mutate(Date = yearmonth(Date)) %>%  
+  as_tsibble(index = Date) %>%  
+  fill_gaps() %>%  
+  mutate(Total_Trade = ifelse(is.na(Total_Trade), mean(Total_Trade, na.rm = TRUE), Total_Trade))  
+
+
+forecast_model <- df_total_trade %>%
+  model(ARIMA(Total_Trade))
+
+
+forecast_result <- forecast_model %>%
+  forecast(h = "6 months")
+
+
+autoplot(forecast_result) +
+  labs(title = "Forecast for Total Trade")
+```
+
+Observation:
