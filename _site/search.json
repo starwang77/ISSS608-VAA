@@ -977,6 +977,41 @@
     "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#lets-make-it-proportional",
     "title": "Hands-on Exercise 8b",
     "section": "26.2 Lets make it proportional",
-    "text": "26.2 Lets make it proportional\nTo draw a proportional symbol map, we need to assign a numerical variable to the size visual attribute. The code chunks below show that the variable Gp1Gp2Winnings is assigned to size visual attribute.\ntm_shape(sgpools_sf)+ tm_bubbles(col = “red”, size = “Gp1Gp2 Winnings”, border.col = “black”, border.lwd = 1)"
+    "text": "26.2 Lets make it proportional\nTo draw a proportional symbol map, we need to assign a numerical variable to the size visual attribute. The code chunks below show that the variable Gp1Gp2Winnings is assigned to size visual attribute.\n\ntm_shape(sgpools_sf)+\ntm_bubbles(col = \"red\",\n           size = \"Gp1Gp2 Winnings\",\n           border.col = \"black\",\n           border.lwd = 1)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#lets-give-it-a-different-colour",
+    "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#lets-give-it-a-different-colour",
+    "title": "Hands-on Exercise 8b",
+    "section": "26.3 Lets give it a different colour",
+    "text": "26.3 Lets give it a different colour\nThe proportional symbol map can be further improved by using the colour visual attribute. In the code chunks below, OUTLET_TYPE variable is used as the colour attribute variable.\n\ntm_shape(sgpools_sf)+\ntm_bubbles(col = \"OUTLET TYPE\", \n          size = \"Gp1Gp2 Winnings\",\n          border.col = \"black\",\n          border.lwd = 1)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#i-have-a-twin-brothers",
+    "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#i-have-a-twin-brothers",
+    "title": "Hands-on Exercise 8b",
+    "section": "26.4 I have a twin brothers :)",
+    "text": "26.4 I have a twin brothers :)\nAn impressive and little-know feature of tmap’s view mode is that it also works with faceted plots. The argument sync in tm_facets() can be used in this case to produce multiple maps with synchronised zoom and pan settings.\n\ntm_shape(sgpools_sf) +\n  tm_bubbles(col = \"OUTLET TYPE\", \n          size = \"Gp1Gp2 Winnings\",\n          border.col = \"black\",\n          border.lwd = 1) +\n  tm_facets(by= \"OUTLET TYPE\",\n            nrow = 1,\n            sync = TRUE)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBefore you end the session, it is wiser to switch tmap’s Viewer back to plot mode by using the code chunk below.\n\ntmap_mode(\"plot\")\n\nℹ tmap mode set to \"plot\"."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#all-about-tmap-package",
+    "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#all-about-tmap-package",
+    "title": "Hands-on Exercise 8b",
+    "section": "27.1 All about tmap package",
+    "text": "27.1 All about tmap package\n\ntmap: Thematic Maps in R\ntmap\ntmap: get started!\ntmap: changes in version 2.0\ntmap: creating thematic maps in a flexible way (useR!2015)\nExploring and presenting maps with tmap (useR!2017)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#geospatial-data-wrangling-1",
+    "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#geospatial-data-wrangling-1",
+    "title": "Hands-on Exercise 8b",
+    "section": "27.2 Geospatial data wrangling",
+    "text": "27.2 Geospatial data wrangling\n\nsf: Simple Features for R\nSimple Features for R: StandardizedSupport for Spatial Vector Data\nReading, Writing and Converting Simple Features"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#data-wrangling",
+    "href": "Hands-on_Ex/Hands-on_Ex08b/Hands-on_Ex08b.html#data-wrangling",
+    "title": "Hands-on Exercise 8b",
+    "section": "27.3 Data wrangling",
+    "text": "27.3 Data wrangling\n\ndplyr\nTidy data\ntidyr: Easily Tidy Data with ‘spread()’ and ‘gather()’ Functions"
   }
 ]
