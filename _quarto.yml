@@ -60,7 +60,9 @@ website:
         - text: "In-class Exercise 5"
           href: "In-class_Ex/In-class_Ex05/In-class_Ex05.html"
         - text: "In-class Exercise 7"
-          href: "In-class_Ex/In-class_Ex07/In-class_Ex07.html"          
+          href: "In-class_Ex/In-class_Ex07/In-class_Ex07.html" 
+        - text: "In-class Exercise 8"
+          href: "In-class_Ex/In-class_Ex08/In-class_Ex08.html"             
     right:
       - href: index.qmd
         text: Home
