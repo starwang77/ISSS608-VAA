@@ -2,3 +2,21 @@
 title: "Take-home_Ex03"
 author: "WANG XINGYUN"
 ---
+
+# **Data Preparation**
+
+This document will go through how we prepare the data that will be used for the Shiny application.
+
+# **1.Setup**
+
+## **1.1 Loading Packages**
+
+```{r}
+pacman::p_load(tidygraph, lubridate, ggplot, leaflet, 
+               plotly, scales, changepoint, sf, sp, 
+               gstat, fable, shiny, shinyWidgets)
+```
+
+## **1.2 Loading Data**
+
+w
