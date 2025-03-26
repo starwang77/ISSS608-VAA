@@ -5,9 +5,9 @@ author: "WANG XINGYUN"
 
 # **Exploratory Data Analysis and Confirmatory Data Analysis**
 
-# **1.Setup**
+## **1.Setup**
 
-## **1.1 Loading Packages**
+### **1.1 Loading Packages**
 
 ```{r}
 pacman::p_load(tidyverse, lubridate, SmartEDA, 
@@ -15,7 +15,7 @@ pacman::p_load(tidyverse, lubridate, SmartEDA,
                ggstatsplot)
 ```
 
-## **1.2 Loading Data**
+### **1.2 Loading Data**
 
 Due to the download method of the Singapore Meteorological Agency website, the relevant data for each location can only be downloaded on a monthly basis. However, our project requires downloading 86 files for 62 locations from 2018 to 2024, which means that one location needs to download 86 files. After Python processing, we merged them into one CSV file and named it weather_data
 
@@ -298,7 +298,7 @@ ggplot(monthly_avg_rain, aes(x = factor(Month), y = factor(Year), fill = Avg_Rai
 
 ## **4. Confirmatory Data Analysis**
 
-4.1 Verify if there are significant differences between different Monsoon seasons
+### 4.1 Verify if there are significant differences between different Monsoon seasons
 
 ```{r}
 anova_result <- aov(Daily.Rainfall.Total..mm. ~ Season, data = weather_active)
@@ -360,19 +360,7 @@ ggplot(weather_active, aes(x = Season, y = Daily.Rainfall.Total..mm., fill = Sea
 
 ```
 
-```{r}
-ggbetweenstats(
-  data = weather_active %>% sample_n(2000),  # random select 2000 rows
-  x = Season,
-  y = Daily.Rainfall.Total..mm.,
-  type = "p",
-  pairwise.comparisons = TRUE,
-  pairwise.display = "s",
-  output = "plot"
-)
-```
-
-4.2 Does Extreme Rainfall significantly increase in different years
+### 4.2 Does Extreme Rainfall significantly increase in different years
 
 Observe whether extreme rainfall (such as days\>100mm) has increased in recent years.
 
@@ -402,7 +390,7 @@ A Poisson regression was performed to evaluate whether the number of extreme rai
 The analysis revealed a statistically significant positive association between year and the count of extreme rainfall days (β = 0.14, *p* \< 0.001).\
 This suggests that the frequency of extreme rainfall events has been increasing in recent years.
 
-4.3 Regional difference analysis (whether the rainfall in the southeast, northwest, and northwest is different)
+### 4.3 Regional difference analysis (whether the rainfall in the southeast, northwest, and northwest is different)
 
 ```{r}
 weather_active <- weather_active %>%
@@ -432,7 +420,7 @@ ggplot(weather_active, aes(x = MainRegion, y = Daily.Rainfall.Total..mm., fill =
 
 ```
 
-4.4 Linear Regression (Rainfall\~Month)
+### 4.4 Linear Regression (Rainfall\~Month)
 
 Observe the overall trend of month vs rainfall
 

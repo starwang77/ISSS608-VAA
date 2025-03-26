@@ -282,11 +282,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#exploratory-data-analysis-and-confirmatory-data-analysis" id="toc-exploratory-data-analysis-and-confirmatory-data-analysis" class="nav-link active" data-scroll-target="#exploratory-data-analysis-and-confirmatory-data-analysis"><strong>Exploratory Data Analysis and Confirmatory Data Analysis</strong></a></li>
+  <li><a href="#exploratory-data-analysis-and-confirmatory-data-analysis" id="toc-exploratory-data-analysis-and-confirmatory-data-analysis" class="nav-link active" data-scroll-target="#exploratory-data-analysis-and-confirmatory-data-analysis"><strong>Exploratory Data Analysis and Confirmatory Data Analysis</strong></a>
+  <ul class="collapse">
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><strong>1.Setup</strong></a>
   <ul class="collapse">
   <li><a href="#loading-packages" id="toc-loading-packages" class="nav-link" data-scroll-target="#loading-packages"><strong>1.1 Loading Packages</strong></a></li>
   <li><a href="#loading-data" id="toc-loading-data" class="nav-link" data-scroll-target="#loading-data"><strong>1.2 Loading Data</strong></a></li>
+  </ul></li>
   <li><a href="#cleaning-data-and-descriptive-analysis" id="toc-cleaning-data-and-descriptive-analysis" class="nav-link" data-scroll-target="#cleaning-data-and-descriptive-analysis"><strong>2. Cleaning Data and Descriptive analysis</strong></a></li>
   <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis"><strong>3. Exploratory Data Analysis</strong></a>
   <ul class="collapse">
@@ -303,7 +305,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#monthly-rainfall-by-monsoon-season" id="toc-monthly-rainfall-by-monsoon-season" class="nav-link" data-scroll-target="#monthly-rainfall-by-monsoon-season">3.11 Monthly Rainfall by Monsoon Season</a></li>
   <li><a href="#monthly-average-rainfall-heatmap" id="toc-monthly-average-rainfall-heatmap" class="nav-link" data-scroll-target="#monthly-average-rainfall-heatmap">3.12 Monthly Average Rainfall Heatmap</a></li>
   </ul></li>
-  <li><a href="#confirmatory-data-analysis" id="toc-confirmatory-data-analysis" class="nav-link" data-scroll-target="#confirmatory-data-analysis"><strong>4. Confirmatory Data Analysis</strong></a></li>
+  <li><a href="#confirmatory-data-analysis" id="toc-confirmatory-data-analysis" class="nav-link" data-scroll-target="#confirmatory-data-analysis"><strong>4. Confirmatory Data Analysis</strong></a>
+  <ul class="collapse">
+  <li><a href="#verify-if-there-are-significant-differences-between-different-monsoon-seasons" id="toc-verify-if-there-are-significant-differences-between-different-monsoon-seasons" class="nav-link" data-scroll-target="#verify-if-there-are-significant-differences-between-different-monsoon-seasons">4.1 Verify if there are significant differences between different Monsoon seasons</a></li>
+  <li><a href="#does-extreme-rainfall-significantly-increase-in-different-years" id="toc-does-extreme-rainfall-significantly-increase-in-different-years" class="nav-link" data-scroll-target="#does-extreme-rainfall-significantly-increase-in-different-years">4.2 Does Extreme Rainfall significantly increase in different years</a></li>
+  <li><a href="#regional-difference-analysis-whether-the-rainfall-in-the-southeast-northwest-and-northwest-is-different" id="toc-regional-difference-analysis-whether-the-rainfall-in-the-southeast-northwest-and-northwest-is-different" class="nav-link" data-scroll-target="#regional-difference-analysis-whether-the-rainfall-in-the-southeast-northwest-and-northwest-is-different">4.3 Regional difference analysis (whether the rainfall in the southeast, northwest, and northwest is different)</a></li>
+  <li><a href="#linear-regression-rainfallmonth" id="toc-linear-regression-rainfallmonth" class="nav-link" data-scroll-target="#linear-regression-rainfallmonth">4.4 Linear Regression (Rainfall~Month)</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -338,25 +346,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="exploratory-data-analysis-and-confirmatory-data-analysis" class="level1">
 <h1><strong>Exploratory Data Analysis and Confirmatory Data Analysis</strong></h1>
-</section>
-<section id="setup" class="level1">
-<h1><strong>1.Setup</strong></h1>
-<section id="loading-packages" class="level2">
-<h2 class="anchored" data-anchor-id="loading-packages"><strong>1.1 Loading Packages</strong></h2>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup"><strong>1.Setup</strong></h2>
+<section id="loading-packages" class="level3">
+<h3 class="anchored" data-anchor-id="loading-packages"><strong>1.1 Loading Packages</strong></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, lubridate, SmartEDA, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggplot2, DataExplorer, dplyr, ggmap,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="loading-data" class="level2">
-<h2 class="anchored" data-anchor-id="loading-data"><strong>1.2 Loading Data</strong></h2>
+<section id="loading-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-data"><strong>1.2 Loading Data</strong></h3>
 <p>Due to the download method of the Singapore Meteorological Agency website, the relevant data for each location can only be downloaded on a monthly basis. However, our project requires downloading 86 files for 62 locations from 2018 to 2024, which means that one location needs to download 86 files. After Python processing, we merged them into one CSV file and named it weather_data</p>
 <p>We will load the merged raw data weather_data.csv and the currently active station data (active_rainfall_stations.csv)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/weather_data.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>active_stations <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/active_rainfall_stations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 </section>
 <section id="cleaning-data-and-descriptive-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="cleaning-data-and-descriptive-analysis"><strong>2. Cleaning Data and Descriptive analysis</strong></h2>
@@ -799,7 +807,8 @@ attr(,"class")
 </section>
 <section id="confirmatory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="confirmatory-data-analysis"><strong>4. Confirmatory Data Analysis</strong></h2>
-<p>4.1 Verify if there are significant differences between different Monsoon seasons</p>
+<section id="verify-if-there-are-significant-differences-between-different-monsoon-seasons" class="level3">
+<h3 class="anchored" data-anchor-id="verify-if-there-are-significant-differences-between-different-monsoon-seasons">4.1 Verify if there are significant differences between different Monsoon seasons</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>anova_result <span class="ot">&lt;-</span> <span class="fu">aov</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> Season, <span class="at">data =</span> weather_active)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -897,34 +906,18 @@ Attaching package: 'ggpubr'</code></pre>
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> weather_active <span class="sc">%&gt;%</span> <span class="fu">sample_n</span>(<span class="dv">2000</span>),  <span class="co"># random select 2000 rows</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> Season,</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> Daily.Rainfall.Total..mm.,</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.display =</span> <span class="st">"s"</span>,</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">output =</span> <span class="st">"plot"</span></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>4.2 Does Extreme Rainfall significantly increase in different years</p>
+</section>
+<section id="does-extreme-rainfall-significantly-increase-in-different-years" class="level3">
+<h3 class="anchored" data-anchor-id="does-extreme-rainfall-significantly-increase-in-different-years">4.2 Does Extreme Rainfall significantly increase in different years</h3>
 <p>Observe whether extreme rainfall (such as days&gt;100mm) has increased in recent years.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>extreme_days_by_year <span class="ot">&lt;-</span> weather_active <span class="sc">%&gt;%</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Daily.Rainfall.Total..mm. <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Year)  </span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>model_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(n <span class="sc">~</span> Year, <span class="at">family =</span> <span class="st">"poisson"</span>, <span class="at">data =</span> extreme_days_by_year)</span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>extreme_days_by_year <span class="ot">&lt;-</span> weather_active <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Daily.Rainfall.Total..mm. <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Year)  </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>model_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(n <span class="sc">~</span> Year, <span class="at">family =</span> <span class="st">"poisson"</span>, <span class="at">data =</span> extreme_days_by_year)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -947,20 +940,20 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(extreme_days_by_year, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> n)) <span class="sc">+</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"poisson"</span>),</span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Poisson Regression: Extreme Rainfall Days by Year"</span>,</span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Extreme Rainfall Days"</span>) <span class="sc">+</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(extreme_days_by_year, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"poisson"</span>),</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Poisson Regression: Extreme Rainfall Days by Year"</span>,</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Extreme Rainfall Days"</span>) <span class="sc">+</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -968,20 +961,22 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <p>A Poisson regression was performed to evaluate whether the number of extreme rainfall days (daily rainfall &gt; 100mm) has increased over the years.<br>
 The analysis revealed a statistically significant positive association between year and the count of extreme rainfall days (β = 0.14, <em>p</em> &lt; 0.001).<br>
 This suggests that the frequency of extreme rainfall events has been increasing in recent years.</p>
-<p>4.3 Regional difference analysis (whether the rainfall in the southeast, northwest, and northwest is different)</p>
+</section>
+<section id="regional-difference-analysis-whether-the-rainfall-in-the-southeast-northwest-and-northwest-is-different" class="level3">
+<h3 class="anchored" data-anchor-id="regional-difference-analysis-whether-the-rainfall-in-the-southeast-northwest-and-northwest-is-different">4.3 Regional difference analysis (whether the rainfall in the southeast, northwest, and northwest is different)</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>weather_active <span class="ot">&lt;-</span> weather_active <span class="sc">%&gt;%</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MainRegion =</span> <span class="fu">case_when</span>(</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Pasir Ris (West)"</span>, <span class="st">"Pasir Ris Central"</span>, <span class="st">"Simei"</span>, <span class="st">"Tanjong Katong"</span>, <span class="st">"Marine Parade"</span>) <span class="sc">~</span> <span class="st">"East"</span>, </span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Punggol"</span>, <span class="st">"Serangoon"</span>) <span class="sc">~</span> <span class="st">"Northeast"</span>,</span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Kranji Reservoir"</span>, <span class="st">"Mandai"</span>) <span class="sc">~</span> <span class="st">"North"</span>,</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Jurong Pier"</span>, <span class="st">"Tuas"</span>, <span class="st">"Bukit Panjang"</span>, <span class="st">"Choa Chu Kang (Central)"</span>, <span class="st">"Lim Chu Kang"</span>) <span class="sc">~</span> <span class="st">"West"</span>,</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Central"</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>weather_active <span class="ot">&lt;-</span> weather_active <span class="sc">%&gt;%</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MainRegion =</span> <span class="fu">case_when</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Pasir Ris (West)"</span>, <span class="st">"Pasir Ris Central"</span>, <span class="st">"Simei"</span>, <span class="st">"Tanjong Katong"</span>, <span class="st">"Marine Parade"</span>) <span class="sc">~</span> <span class="st">"East"</span>, </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Punggol"</span>, <span class="st">"Serangoon"</span>) <span class="sc">~</span> <span class="st">"Northeast"</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Kranji Reservoir"</span>, <span class="st">"Mandai"</span>) <span class="sc">~</span> <span class="st">"North"</span>,</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    Station <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Jurong Pier"</span>, <span class="st">"Tuas"</span>, <span class="st">"Bukit Panjang"</span>, <span class="st">"Choa Chu Kang (Central)"</span>, <span class="st">"Lim Chu Kang"</span>) <span class="sc">~</span> <span class="st">"West"</span>,</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Central"</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>anova_mainregion <span class="ot">&lt;-</span> <span class="fu">aov</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> MainRegion, <span class="at">data =</span> weather_active)</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_mainregion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>anova_mainregion <span class="ot">&lt;-</span> <span class="fu">aov</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> MainRegion, <span class="at">data =</span> weather_active)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_mainregion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               Df   Sum Sq Mean Sq F value Pr(&gt;F)    
 MainRegion      4    20792    5198   23.41 &lt;2e-16 ***
@@ -989,7 +984,7 @@ Residuals   64848 14399494     222
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(anova_mainregion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(anova_mainregion)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Tukey multiple comparisons of means
     95% family-wise confidence level
@@ -1011,24 +1006,26 @@ West-Northeast     1.8934478  1.0896873  2.6972084 0.0000000</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(weather_active, <span class="fu">aes</span>(<span class="at">x =</span> MainRegion, <span class="at">y =</span> Daily.Rainfall.Total..mm., <span class="at">fill =</span> MainRegion)) <span class="sc">+</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_compare_means</span>(<span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">label.y =</span> <span class="dv">120</span>) <span class="sc">+</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily Rainfall by Region"</span>, <span class="at">y =</span> <span class="st">"Rainfall (mm)"</span>, <span class="at">x =</span> <span class="st">"Region"</span>) <span class="sc">+</span></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(weather_active, <span class="fu">aes</span>(<span class="at">x =</span> MainRegion, <span class="at">y =</span> Daily.Rainfall.Total..mm., <span class="at">fill =</span> MainRegion)) <span class="sc">+</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_compare_means</span>(<span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">label.y =</span> <span class="dv">120</span>) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily Rainfall by Region"</span>, <span class="at">y =</span> <span class="st">"Rainfall (mm)"</span>, <span class="at">x =</span> <span class="st">"Region"</span>) <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>4.4 Linear Regression (Rainfall~Month)</p>
+</section>
+<section id="linear-regression-rainfallmonth" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression-rainfallmonth">4.4 Linear Regression (Rainfall~Month)</h3>
 <p>Observe the overall trend of month vs rainfall</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>lm_month <span class="ot">&lt;-</span> <span class="fu">lm</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> Month, <span class="at">data =</span> weather_active)</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_month)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>lm_month <span class="ot">&lt;-</span> <span class="fu">lm</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> Month, <span class="at">data =</span> weather_active)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_month)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1051,27 +1048,28 @@ F-statistic:  68.9 on 1 and 64851 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(weather_active, <span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> Daily.Rainfall.Total..mm.)) <span class="sc">+</span></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear Trend of Rainfall by Month"</span>,</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"Daily Rainfall (mm)"</span>) <span class="sc">+</span></span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(weather_active, <span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> Daily.Rainfall.Total..mm.)) <span class="sc">+</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear Trend of Rainfall by Month"</span>,</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"Daily Rainfall (mm)"</span>) <span class="sc">+</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 
 
+</section>
 </section>
 </section>
 

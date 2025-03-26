@@ -282,9 +282,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#confirmatory-data-analysis" id="toc-confirmatory-data-analysis" class="nav-link active" data-scroll-target="#confirmatory-data-analysis"><strong>Confirmatory Data Analysis</strong></a>
+  <li><a href="#temporal-rainfall-analysis" id="toc-temporal-rainfall-analysis" class="nav-link active" data-scroll-target="#temporal-rainfall-analysis"><strong>Temporal Rainfall Analysis</strong></a>
   <ul class="collapse">
-  <li><a href="#installing-and-launching-the-required-r-packages" id="toc-installing-and-launching-the-required-r-packages" class="nav-link" data-scroll-target="#installing-and-launching-the-required-r-packages"><strong>1. Installing and Launching the Required R Packages</strong></a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">1. Introduction</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><strong>2.</strong> Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#installing-and-launching-the-required-r-packages" id="toc-installing-and-launching-the-required-r-packages" class="nav-link" data-scroll-target="#installing-and-launching-the-required-r-packages"><strong>2.1 Installing and Launching the Required R Packages</strong></a></li>
+  <li><a href="#loading-data" id="toc-loading-data" class="nav-link" data-scroll-target="#loading-data">2.2 Loading data</a></li>
+  <li><a href="#cleaning-data" id="toc-cleaning-data" class="nav-link" data-scroll-target="#cleaning-data">2.3 Cleaning data</a></li>
+  </ul></li>
+  <li><a href="#seasonal-decomposition" id="toc-seasonal-decomposition" class="nav-link" data-scroll-target="#seasonal-decomposition">3.Seasonal Decomposition</a></li>
+  <li><a href="#change-point-detection" id="toc-change-point-detection" class="nav-link" data-scroll-target="#change-point-detection">4.Change Point Detection</a></li>
+  <li><a href="#storyboard" id="toc-storyboard" class="nav-link" data-scroll-target="#storyboard">5.storyboard</a>
+  <ul class="collapse">
+  <li><a href="#temporal-rainfall-analysis-user-guide" id="toc-temporal-rainfall-analysis-user-guide" class="nav-link" data-scroll-target="#temporal-rainfall-analysis-user-guide">Temporal Rainfall Analysis – User Guide</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -317,19 +329,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="confirmatory-data-analysis" class="level1">
-<h1><strong>Confirmatory Data Analysis</strong></h1>
-<p>The following page will run through the various steps on how to prepare the dataset to conduct Confirmatory Data Analysis (CDA).</p>
-<section id="installing-and-launching-the-required-r-packages" class="level2">
-<h2 class="anchored" data-anchor-id="installing-and-launching-the-required-r-packages"><strong>1. Installing and Launching the Required R Packages</strong></h2>
+<section id="temporal-rainfall-analysis" class="level1">
+<h1><strong>Temporal Rainfall Analysis</strong></h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1. Introduction</h2>
+<p>Rainfall variability has significant implications for flood risk management and urban planning, especially in tropical regions such as Singapore where monsoonal patterns govern seasonal rainfall distribution. This module, Temporal Rainfall Analysis, focuses on examining the temporal characteristics of rainfall to uncover underlying patterns and detect meaningful changes over time.</p>
+<p>Two key analytical techniques are implemented in this module:</p>
+<p>Seasonal Decomposition: This technique decomposes the rainfall time series into three components — trend, seasonality, and residuals. By isolating these elements, we can better understand the influence of monsoons, detect periodic rainfall patterns, and identify any irregular fluctuations in the data. Seasonal decomposition also provides insights into whether certain months or seasons consistently contribute to higher rainfall intensity.</p>
+<p>Change Point Detection: This method aims to identify structural shifts or abrupt changes in the rainfall time series. Such changes may indicate the impact of external factors such as climate change, urbanisation, or policy interventions. Detecting these change points allows us to quantify long-term shifts in precipitation trends and provides a foundation for adaptive planning and forecasting.</p>
+<p>Together, these techniques provide a comprehensive understanding of temporal rainfall dynamics, supporting better decision-making in flood mitigation and environmental policy formulation.</p>
+</section>
+<section id="data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation"><strong>2.</strong> Data Preparation</h2>
+<section id="installing-and-launching-the-required-r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-and-launching-the-required-r-packages"><strong>2.1 Installing and Launching the Required R Packages</strong></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, ggpubr, car, agricolae)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, lubridate, SmartEDA, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggplot2, DataExplorer, dplyr, ggmap,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               ggstatsplot, zoo, forecast, changepoint)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>load data</p>
+</section>
+<section id="loading-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-data">2.2 Loading data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>weather <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/weather_data.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>active_stations <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/active_rainfall_stations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="cleaning-data" class="level3">
+<h3 class="anchored" data-anchor-id="cleaning-data">2.3 Cleaning data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove () for consistent naming</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>weather<span class="sc">$</span>Station <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"[()]"</span>, <span class="st">""</span>, <span class="fu">trimws</span>(<span class="fu">as.character</span>(weather<span class="sc">$</span>Station)))</span>
@@ -385,18 +413,383 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Station, Date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>anova_result <span class="ot">&lt;-</span> <span class="fu">aov</span>(Daily.Rainfall.Total..mm. <span class="sc">~</span> Season, <span class="at">data =</span> weather_active)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># all variables EDA (descriptive statistical)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>weather_active <span class="sc">%&gt;%</span> <span class="fu">ExpData</span>(<span class="at">type =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               Df   Sum Sq Mean Sq F value Pr(&gt;F)    
-Season          3    37148   12383   55.83 &lt;2e-16 ***
-Residuals   64849 14383138     222                   
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre><code>                                          Descriptions      Value
+1                                   Sample size (nrow)      64853
+2                              No. of variables (ncol)         17
+3                    No. of numeric/interger variables         14
+4                              No. of factor variables          2
+5                                No. of text variables          0
+6                             No. of logical variables          0
+7                          No. of identifier variables          0
+8                                No. of date variables          1
+9             No. of zero variance variables (uniform)          0
+10               %. of variables having complete cases 52.94% (9)
+11   %. of variables having &gt;0% and &lt;50% missing cases 17.65% (3)
+12 %. of variables having &gt;=50% and &lt;90% missing cases     0% (0)
+13          %. of variables having &gt;=90% missing cases 29.41% (5)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>weather_active <span class="sc">%&gt;%</span> <span class="fu">ExpData</span>(<span class="at">type =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Index                 Variable_Name Variable_Type Sample_n Missing_Count
+1      1                       Station        factor    64853             0
+2      2                          Year       numeric    64853             0
+3      3                         Month       numeric    64853             0
+4      4                           Day       numeric    64853             0
+5      5     Daily.Rainfall.Total..mm.       numeric    64853             0
+6      6  Highest.30.Min.Rainfall..mm.       numeric    64506           347
+7      7  Highest.60.Min.Rainfall..mm.       numeric    64485           368
+8      8 Highest.120.Min.Rainfall..mm.       numeric    64485           368
+9      9        Mean.Temperature..Â.C.       numeric        0         64853
+10    10     Maximum.Temperature..Â.C.       numeric        0         64853
+11    11     Minimum.Temperature..Â.C.       numeric        0         64853
+12    12        Mean.Wind.Speed..km.h.       numeric        0         64853
+13    13         Max.Wind.Speed..km.h.       numeric        0         64853
+14    14                      Latitude       numeric    64853             0
+15    15                     Longitude       numeric    64853             0
+16    16                          Date          Date    64853             0
+17    17                        Season        factor    64853             0
+   Per_of_Missing No_of_distinct_values
+1           0.000                    27
+2           0.000                     7
+3           0.000                    12
+4           0.000                    31
+5           0.000                   679
+6           0.005                   346
+7           0.006                   450
+8           0.006                   542
+9           1.000                     0
+10          1.000                     0
+11          1.000                     0
+12          1.000                     0
+13          1.000                     0
+14          0.000                    27
+15          0.000                    27
+16          0.000                  2557
+17          0.000                     4</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="seasonal-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="seasonal-decomposition">3.Seasonal Decomposition</h2>
+<p><strong>STL Decomposition of Monthly Rainfall</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select Bukit Panjang for analysis</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>station_data <span class="ot">&lt;-</span> weather_active <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Station <span class="sc">==</span> <span class="st">"Bukit Panjang"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Date) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">DailyRainfall =</span> <span class="fu">sum</span>(Daily.Rainfall.Total..mm.)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>monthly_rainfall <span class="ot">&lt;-</span> station_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">YearMonth =</span> <span class="fu">floor_date</span>(Date, <span class="st">"month"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(YearMonth) <span class="sc">%&gt;%</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">MonthlyRainfall =</span> <span class="fu">sum</span>(DailyRainfall))</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>rain_ts <span class="ot">&lt;-</span> <span class="fu">ts</span>(monthly_rainfall<span class="sc">$</span>MonthlyRainfall,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">start =</span> <span class="fu">c</span>(<span class="fu">year</span>(<span class="fu">min</span>(monthly_rainfall<span class="sc">$</span>YearMonth)), <span class="fu">month</span>(<span class="fu">min</span>(monthly_rainfall<span class="sc">$</span>YearMonth))),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>rain_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(rain_ts, <span class="at">s.window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rain_stl, <span class="at">main =</span> <span class="st">"STL Decomposition of Monthly Rainfall – Bukit Panjang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex03a_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The STL decomposition of monthly rainfall at Bukit Panjang reveals strong seasonality, with higher rainfall consistently occurring around November and December, reflecting the Northeast Monsoon’s influence.</p>
+<p>The trend component shows a decline from 2018 to mid-2020, followed by a sharp increase peaking around 2021. This may be attributed to recent climate shifts or land use changes impacting precipitation intensity.</p>
+<p>The remainder component indicates several significant anomalies in rainfall data, highlighting extreme weather events that deviate from the expected seasonal and trend patterns.</p>
+<p><strong>Residual Rainfall Component</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>remainder_component <span class="ot">&lt;-</span> rain_stl<span class="sc">$</span>time.series[, <span class="st">"remainder"</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>residual_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Date =</span> <span class="fu">seq.Date</span>(<span class="at">from =</span> <span class="fu">min</span>(monthly_rainfall<span class="sc">$</span>YearMonth),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="st">"month"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">length.out =</span> <span class="fu">length</span>(remainder_component)),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Residual =</span> <span class="fu">as.numeric</span>(remainder_component)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(residual_df, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Residual)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkorange"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residual Rainfall Component – Bukit Panjang"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Random variation after removing trend and seasonality (STL)"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residual Rainfall (mm)"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex03a_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="change-point-detection" class="level2">
+<h2 class="anchored" data-anchor-id="change-point-detection">4.Change Point Detection</h2>
+<p>To identify structural shifts in rainfall trends over time, we applied the PELT method using the <code>changepoint</code> package. The analysis was conducted on the monthly aggregated rainfall data for Bukit Panjang.</p>
+<p>The figure below highlights the detected change points (red dashed lines), which indicate statistically significant changes in the average monthly rainfall level.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>monthly_data <span class="ot">&lt;-</span> monthly_rainfall<span class="sc">$</span>MonthlyRainfall</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cpt_mean <span class="ot">&lt;-</span> <span class="fu">cpt.mean</span>(monthly_data, <span class="at">method =</span> <span class="st">"PELT"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cpt_mean, <span class="at">main =</span> <span class="st">"Change Point Detection – Monthly Rainfall (Mean)"</span>, <span class="at">xlab =</span> <span class="st">"Month Index"</span>, <span class="at">ylab =</span> <span class="st">"Rainfall (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex03a_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>change_index <span class="ot">&lt;-</span> <span class="fu">cpts</span>(cpt_mean)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>change_dates <span class="ot">&lt;-</span> monthly_rainfall<span class="sc">$</span>YearMonth[change_index]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_rainfall, <span class="fu">aes</span>(<span class="at">x =</span> YearMonth, <span class="at">y =</span> MonthlyRainfall)) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.numeric</span>(change_dates), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Change Point Detection – Monthly Rainfall (Mean)"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Detected structural changes in rainfall pattern using PELT method"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Monthly Rainfall (mm)"</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex03a_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="storyboard" class="level2">
+<h2 class="anchored" data-anchor-id="storyboard">5.storyboard</h2>
+<p>Storyboard aims to visually maps out user’s experience. It is a tool for making strong visual connection between the insights uncovered based on research and user’s interaction with the R Shiny dashboard application.</p>
+<p>The storyboard like the graph below</p>
+<p><img src="images/guide.png" class="img-fluid"></p>
+<p>Code chunk below shows the simplified version of UI and Server components in R Shiny application</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(changepoint)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>weather_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/weather_data.csv"</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>active_stations <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/active_rainfall_stations.csv"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean station names</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>weather_data<span class="sc">$</span>Station <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"[()]"</span>, <span class="st">""</span>, <span class="fu">trimws</span>(<span class="fu">as.character</span>(weather_data<span class="sc">$</span>Station)))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>active_stations<span class="sc">$</span>Station.Name <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"[()]"</span>, <span class="st">""</span>, <span class="fu">trimws</span>(<span class="fu">as.character</span>(active_stations<span class="sc">$</span>Station.Name)))</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter active stations</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>weather_active <span class="ot">&lt;-</span> weather_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Station <span class="sc">%in%</span> active_stations<span class="sc">$</span>Station.Name) <span class="sc">%&gt;%</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">make_date</span>(Year, Month, Day)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Daily.Rainfall.Total..mm.))</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># UI ----------------------------------------------------------</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Temporal Rainfall Analysis (STL &amp; Changepoint)"</span>),</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sidebarLayout</span>(</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarPanel</span>(</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">div</span>(<span class="at">style =</span> <span class="st">"border: 2px solid #8B0000; background-color: #F8E6E0; padding: 10px; border-radius: 8px;"</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>          <span class="fu">h4</span>(<span class="st">"🔧 Analysis Controls"</span>, <span class="at">style =</span> <span class="st">"color: #8B0000;"</span>),</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>          <span class="fu">selectInput</span>(<span class="st">"station"</span>, <span class="st">"Select Station:"</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                      <span class="at">choices =</span> <span class="fu">unique</span>(weather_active<span class="sc">$</span>Station),</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                      <span class="at">selected =</span> <span class="st">"Bukit Panjang"</span>),</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>          <span class="fu">dateRangeInput</span>(<span class="st">"date_range"</span>, <span class="st">"Select Date Range:"</span>,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>                         <span class="at">start =</span> <span class="fu">min</span>(weather_active<span class="sc">$</span>Date),</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>                         <span class="at">end =</span> <span class="fu">max</span>(weather_active<span class="sc">$</span>Date)),</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>          <span class="fu">actionButton</span>(<span class="st">"update"</span>, <span class="st">"Update Analysis"</span>, <span class="at">icon =</span> <span class="fu">icon</span>(<span class="st">"sync"</span>)),</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>          <span class="fu">helpText</span>(<span class="st">"📌 Minimum 2 years required for STL/Residual. 10 months for Change Point."</span>)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tabsetPanel</span>(</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"STL Decomposition"</span>, <span class="fu">plotOutput</span>(<span class="st">"stlPlot"</span>)),</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Residuals"</span>, <span class="fu">plotOutput</span>(<span class="st">"residualPlot"</span>)),</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Change Point Detection"</span>, <span class="fu">plotOutput</span>(<span class="st">"cptPlot"</span>))</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">br</span>(),</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">h4</span>(<span class="st">"📊 Summary Statistics"</span>),</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">verbatimTextOutput</span>(<span class="st">"summaryBox"</span>),</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">downloadButton</span>(<span class="st">"downloadPlot"</span>, <span class="st">"Download STL Plot"</span>)</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a><span class="co"># SERVER -------------------------------------------------------</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trigger only after "Update" button is clicked</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>  filtered_data <span class="ot">&lt;-</span> <span class="fu">eventReactive</span>(input<span class="sc">$</span>update, {</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>    weather_active <span class="sc">%&gt;%</span></span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(Station <span class="sc">==</span> input<span class="sc">$</span>station,</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>             Date <span class="sc">&gt;=</span> input<span class="sc">$</span>date_range[<span class="dv">1</span>],</span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>             Date <span class="sc">&lt;=</span> input<span class="sc">$</span>date_range[<span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(Date) <span class="sc">%&gt;%</span></span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">DailyRainfall =</span> <span class="fu">sum</span>(Daily.Rainfall.Total..mm.)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(Date)</span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>  monthly_rain <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filtered_data</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">YearMonth =</span> <span class="fu">floor_date</span>(Date, <span class="st">"month"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(YearMonth) <span class="sc">%&gt;%</span></span>
+<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">MonthlyRainfall =</span> <span class="fu">sum</span>(DailyRainfall))</span>
+<span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>  rain_ts <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ts</span>(<span class="fu">monthly_rain</span>()<span class="sc">$</span>MonthlyRainfall,</span>
+<span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a>       <span class="at">start =</span> <span class="fu">c</span>(<span class="fu">year</span>(<span class="fu">min</span>(<span class="fu">monthly_rain</span>()<span class="sc">$</span>YearMonth)), <span class="fu">month</span>(<span class="fu">min</span>(<span class="fu">monthly_rain</span>()<span class="sc">$</span>YearMonth))),</span>
+<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>       <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a>  <span class="co"># STL Decomposition</span></span>
+<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>stlPlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>update)  <span class="co"># Ensure update clicked</span></span>
+<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(<span class="fu">monthly_rain</span>()) <span class="sc">&lt;</span> <span class="dv">24</span>) {</span>
+<span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot.new</span>()</span>
+<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a>      <span class="fu">title</span>(<span class="at">main =</span> <span class="st">"⛔ Data too short for STL Decomposition.</span><span class="sc">\n</span><span class="st">Please select at least 2 years of data."</span>)</span>
+<span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>      rain_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(<span class="fu">rain_ts</span>(), <span class="at">s.window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot</span>(rain_stl, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"STL Decomposition –"</span>, input<span class="sc">$</span>station))</span>
+<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Residual Plot</span></span>
+<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>residualPlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>update)</span>
+<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(<span class="fu">monthly_rain</span>()) <span class="sc">&lt;</span> <span class="dv">24</span>) {</span>
+<span id="cb14-96"><a href="#cb14-96" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot.new</span>()</span>
+<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a>      <span class="fu">title</span>(<span class="at">main =</span> <span class="st">"⛔ Not enough data for residual analysis.</span><span class="sc">\n</span><span class="st">Please select at least 2 years of data."</span>)</span>
+<span id="cb14-98"><a href="#cb14-98" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb14-99"><a href="#cb14-99" aria-hidden="true" tabindex="-1"></a>      rain_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(<span class="fu">rain_ts</span>(), <span class="at">s.window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a>      remainder_component <span class="ot">&lt;-</span> rain_stl<span class="sc">$</span>time.series[, <span class="st">"remainder"</span>]</span>
+<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a>      df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb14-102"><a href="#cb14-102" aria-hidden="true" tabindex="-1"></a>        <span class="at">Date =</span> <span class="fu">seq.Date</span>(<span class="at">from =</span> <span class="fu">min</span>(<span class="fu">monthly_rain</span>()<span class="sc">$</span>YearMonth),</span>
+<span id="cb14-103"><a href="#cb14-103" aria-hidden="true" tabindex="-1"></a>                        <span class="at">by =</span> <span class="st">"month"</span>,</span>
+<span id="cb14-104"><a href="#cb14-104" aria-hidden="true" tabindex="-1"></a>                        <span class="at">length.out =</span> <span class="fu">length</span>(remainder_component)),</span>
+<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a>        <span class="at">Residual =</span> <span class="fu">as.numeric</span>(remainder_component)</span>
+<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-108"><a href="#cb14-108" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Residual)) <span class="sc">+</span></span>
+<span id="cb14-109"><a href="#cb14-109" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkorange"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb14-111"><a href="#cb14-111" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(</span>
+<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Residual Rainfall –"</span>, input<span class="sc">$</span>station),</span>
+<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">"Random variation after removing trend and seasonality"</span>,</span>
+<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Residual (mm)"</span></span>
+<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
+<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_minimal</span>()</span>
+<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Change Point Detection</span></span>
+<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a> output<span class="sc">$</span>cptPlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>update)</span>
+<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(<span class="fu">monthly_rain</span>()) <span class="sc">&lt;</span> <span class="dv">10</span>) {</span>
+<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plot.new</span>()</span>
+<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a>      <span class="fu">title</span>(<span class="at">main =</span> <span class="st">"⛔ Not enough data for Change Point Detection.</span><span class="sc">\n</span><span class="st">Please select at least 10 months of data."</span>)</span>
+<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a>      rain_vals <span class="ot">&lt;-</span> <span class="fu">monthly_rain</span>()<span class="sc">$</span>MonthlyRainfall</span>
+<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a>      cpt <span class="ot">&lt;-</span> <span class="fu">cpt.mean</span>(rain_vals, <span class="at">method =</span> <span class="st">"PELT"</span>)</span>
+<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a>      change_dates <span class="ot">&lt;-</span> <span class="fu">monthly_rain</span>()<span class="sc">$</span>YearMonth[<span class="fu">cpts</span>(cpt)]</span>
+<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">monthly_rain</span>(), <span class="fu">aes</span>(<span class="at">x =</span> YearMonth, <span class="at">y =</span> MonthlyRainfall)) <span class="sc">+</span></span>
+<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.numeric</span>(change_dates),</span>
+<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a>                   <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(</span>
+<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Change Point Detection –"</span>, input<span class="sc">$</span>station),</span>
+<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">"Detected mean shifts using PELT method"</span>,</span>
+<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Monthly Rainfall (mm)"</span></span>
+<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
+<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_minimal</span>()</span>
+<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-142"><a href="#cb14-142" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Summary Box</span></span>
+<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a> output<span class="sc">$</span>summaryBox <span class="ot">&lt;-</span> <span class="fu">renderPrint</span>({</span>
+<span id="cb14-145"><a href="#cb14-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req</span>(input<span class="sc">$</span>update)</span>
+<span id="cb14-146"><a href="#cb14-146" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">monthly_rain</span>()</span>
+<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(df) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"No data available."</span>)</span>
+<span id="cb14-149"><a href="#cb14-149" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb14-150"><a href="#cb14-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Total Months:"</span>, <span class="fu">nrow</span>(df), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Average Monthly Rainfall:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(df<span class="sc">$</span>MonthlyRainfall), <span class="dv">2</span>), <span class="st">"mm</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Maximum Monthly Rainfall:"</span>, <span class="fu">round</span>(<span class="fu">max</span>(df<span class="sc">$</span>MonthlyRainfall), <span class="dv">2</span>), <span class="st">"mm"</span>)</span>
+<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-156"><a href="#cb14-156" aria-hidden="true" tabindex="-1"></a><span class="co"># Download Button handler</span></span>
+<span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a> output<span class="sc">$</span>downloadPlot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb14-158"><a href="#cb14-158" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"STL_Plot_"</span>, input<span class="sc">$</span>station, <span class="st">".png"</span>)</span>
+<span id="cb14-160"><a href="#cb14-160" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a>    <span class="fu">png</span>(file, <span class="at">width =</span> <span class="dv">900</span>, <span class="at">height =</span> <span class="dv">600</span>)</span>
+<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a>    rain_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(<span class="fu">rain_ts</span>(), <span class="at">s.window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(rain_stl, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"STL Decomposition –"</span>, input<span class="sc">$</span>station))</span>
+<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="temporal-rainfall-analysis-user-guide" class="level3">
+<h3 class="anchored" data-anchor-id="temporal-rainfall-analysis-user-guide">Temporal Rainfall Analysis – User Guide</h3>
+<p><strong>Analysis Controls Panel</strong></p>
+<p>This section allows users to set the input parameters for the analysis.</p>
+<p><strong>[1]</strong> Select Station: Use the dropdown menu to select one of the 27 active rainfall monitoring stations (e.g., Botanic Garden).</p>
+<p><strong>[2]</strong> Select Date Range: Define the desired analysis period.</p>
+<p>*A minimum of 2 years is required to perform STL Decomposition and Residual Analysis.</p>
+<p>*A minimum of 10 months is required for Change Point Detection.</p>
+<p><strong>[3]</strong> Update Analysis: Click the Update Analysis button to apply the selected filters. All charts and outputs will refresh based on your selection.</p>
+<p><strong>[4]</strong> Note Reminder: This section provides a helpful reminder of the minimum data length required for each analysis technique.</p>
+<p><strong>Analysis Tabs</strong></p>
+<p>Results are organized under three main tabs:</p>
+<p><strong>[5]</strong></p>
+<p><strong>STL Decomposition:</strong></p>
+<p>Decomposes monthly rainfall data into trend, seasonal, and residual components.This helps identify monsoon seasonality—especially the Northeast Monsoon peak between November and December.</p>
+<p><strong>Residuals:</strong></p>
+<p>Displays the remaining variability after removing seasonality and trend. This allows users to detect anomalies or extreme rainfall events.</p>
+<p><strong>Change Point Detection:</strong></p>
+<p>Identifies statistically significant shifts in mean rainfall over time.This can indicate long-term climate trends or sudden changes due to urbanization or environmental factors.</p>
+<p><strong>Summary Statistics</strong></p>
+<p><strong>[6]</strong> Summary Box: Below the analysis plots, users can find an automatically generated summary, including: Total number of months, Average monthly rainfall (mm), Maximum monthly rainfall (mm)</p>
+<p>This helps users quickly interpret rainfall magnitude over the selected period.</p>
+<p><strong>Download Feature</strong></p>
+<p><strong>[7]</strong> Download STL Plot: Users can download the STL decomposition plot in PNG format for use in presentations, reports, or further documentation</p>
 
 
+</section>
 </section>
 </section>
 
