@@ -1,0 +1,82 @@
+---
+title: "Take-home_Ex03a"
+author: "WANG XINGYUN"
+---
+
+# **Confirmatory Data Analysis**
+
+The following page will run through the various steps on how to prepare the dataset to conduct Confirmatory Data Analysis (CDA).
+
+## **1. Installing and Launching the Required R Packages**
+
+```{r}
+pacman::p_load(tidyverse, ggpubr, car, agricolae)
+```
+
+load data
+
+```{r}
+weather <- read.csv("data/weather_data.csv")
+active_stations <- read.csv("data/active_rainfall_stations.csv")
+```
+
+```{r}
+# Remove () for consistent naming
+weather$Station <- gsub("[()]", "", trimws(as.character(weather$Station)))
+active_stations$Station.Name <- gsub("[()]", "", trimws(as.character(active_stations$Station.Name)))
+
+# Filter for active stations
+weather_active <- weather %>% 
+  filter(Station %in% active_stations$Station.Name)
+
+# Select relevant columns for EDA 
+weather_active <- weather_active %>%
+  select(
+    Station, Year, Month, Day,
+    Daily.Rainfall.Total..mm.,
+    Highest.30.Min.Rainfall..mm.,
+    Highest.60.Min.Rainfall..mm.,
+    Highest.120.Min.Rainfall..mm.,
+    Mean.Temperature..Â.C.,
+    Maximum.Temperature..Â.C.,
+    Minimum.Temperature..Â.C.,
+    Mean.Wind.Speed..km.h.,
+    Max.Wind.Speed..km.h.,
+  ) %>%
+  filter(!is.na(Daily.Rainfall.Total..mm.)) %>%
+  merge(active_stations, by.x = "Station", by.y = "Station.Name") %>%
+  select(
+    Station, Year, Month, Day,
+    Daily.Rainfall.Total..mm.,
+    Highest.30.Min.Rainfall..mm.,
+    Highest.60.Min.Rainfall..mm.,
+    Highest.120.Min.Rainfall..mm.,
+    Mean.Temperature..Â.C.,
+    Maximum.Temperature..Â.C.,
+    Minimum.Temperature..Â.C.,
+    Mean.Wind.Speed..km.h.,
+    Max.Wind.Speed..km.h.,
+    Latitude, Longitude
+  ) %>%
+  mutate(
+    Date = make_date(Year, Month, Day),
+    Station = as.factor(Station),
+    
+    # Add Monsoon Season Label
+    Season = case_when(
+      Month %in% c(12, 1, 2) | (Month == 3 & Day <= 15) ~ "Northeast Monsoon",
+      (Month == 3 & Day > 15) | Month %in% c(4, 5) ~ "Inter-monsoon I",
+      Month %in% c(6, 7, 8, 9) ~ "Southwest Monsoon",
+      Month %in% c(10, 11) ~ "Inter-monsoon II",
+      TRUE ~ "Unknown"
+    ),
+    Season = factor(Season, levels = c("Northeast Monsoon", "Inter-monsoon I", "Southwest Monsoon", "Inter-monsoon II"))
+  ) %>%
+  arrange(Station, Date)
+
+```
+
+```{r}
+anova_result <- aov(Daily.Rainfall.Total..mm. ~ Season, data = weather_active)
+summary(anova_result)
+```
