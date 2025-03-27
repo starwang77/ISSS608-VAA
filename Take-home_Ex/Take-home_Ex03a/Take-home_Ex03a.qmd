@@ -427,4 +427,4 @@ This helps users quickly interpret rainfall magnitude over the selected period.
 
 **Download Feature**
 
-**\[7\]** Download STL Plot: Users can download the STL decomposition plot in PNG format for use in presentations, reports, or further documentation
+**\[7\]** Download STL Plot: Users can download the STL decomposition plot in PNG format for use in presentations, reports, or further documentation.
