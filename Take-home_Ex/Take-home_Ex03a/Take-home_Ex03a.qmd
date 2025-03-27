@@ -383,7 +383,7 @@ server <- function(input, output, session) {
 }
 ```
 
-### Temporal Rainfall Analysis – User Guide
+**Temporal Rainfall Analysis – User Guide**
 
 **Analysis Controls Panel**
 
