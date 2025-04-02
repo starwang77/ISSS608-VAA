@@ -298,6 +298,11 @@ ggplot(monthly_avg_rain, aes(x = factor(Month), y = factor(Year), fill = Avg_Rai
 
 ## **4. Confirmatory Data Analysis**
 
+```{r}
+write.csv(weather_active, "weather_active.csv", row.names = FALSE)
+
+```
+
 ### 4.1 Verify if there are significant differences between different Monsoon seasons
 
 ```{r}
@@ -454,3 +459,7 @@ ggplot(weather_active, aes(x = Month, y = Daily.Rainfall.Total..mm.)) +
   theme_minimal()
 
 ```
+
+Click here you can see the shiny app original version
+
+<https://wangxingyun.shinyapps.io/final_project/>
