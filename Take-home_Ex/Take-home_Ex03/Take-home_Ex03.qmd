@@ -310,6 +310,19 @@ TukeyHSD(anova_result)
 ```
 
 ```{r}
+ggbetweenstats(
+  data = weather_active %>% filter(Year == 2021),
+  x = Season,
+  y = Daily.Rainfall.Total..mm.,
+  type = "p",
+  pairwise.comparisons = TRUE,
+  pairwise.display = "s",
+  output = "plot"
+)
+
+```
+
+```{r}
 library(ggplot2)
 library(ggpubr)
 library(dplyr)
